@@ -13,7 +13,7 @@ Guidelines for A- or better grade:
 - Create and update information on the backend to at least one endpoint in the API.
 - Use CSS effectively (i.e., application looks / feels nice to use). CSS frameworks OK.
 - ---------
-- Create and update information on the backend to at least three endpoints in the API.
+- Create and update information on the backend to at least three endpoints in the API. (4 total?)
 - At least one live interactive feature. By this, I mean that the interface updates somehow as the user is doing something like typing, moving a slider or something like that (autocomplete, live update of list or visualization, etc.).
 - Incorporating one or more third party APIs (Google Maps is an obvious one, Twitter?, Facebook?, SoundCloud?).
 - Application has more than one "mode" (i.e., the interface gets torn down and rebuilt).
