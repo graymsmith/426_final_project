@@ -14,7 +14,7 @@
 
 	<div class="container-fluid">
 		<div id='login_div' class="form-signin">
-			<h1 class='title'>Log In to the Trip Planner</h1>
+			<h1 class='title'>Login to the Trip Planner</h1>
 			<div>
 				<input class='form-control' type='text' placeholder='username' id='login_user'>
 			</div>
@@ -23,7 +23,10 @@
 			</div>
 			<button type='submit' class='btn btn-lg btn-primary btn-block' id='login_btn'>Login</button>
 			<br>
-			<div id='message_div'> </div>
+			<!--<div id='message_div'> </div>-->
+			<div class="alert alert-warning hidden" id="message_div">
+				<strong>Warning!</strong> Username or password incorrect. Try again.
+			</div>
 		</div>
 
 	</div>

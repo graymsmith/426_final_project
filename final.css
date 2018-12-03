@@ -1,14 +1,56 @@
 body.login-body {
     padding-top: 40px;
     padding-bottom: 40px;
-    background-color: darkslategrey;
-    color: whitesmoke;
+    background-color: lightgray;
+    color: darkslategrey;
 }
 
 body.reg-body {
     background-color: darkslategrey;
     color: whitesmoke;
 }
+
+.well {
+    color: gray;
+}
+
+#departing_information, #returning_information {
+    background-color: #264040;
+    color: whitesmoke;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#title_page_stuff {
+    background-color: lightgray;
+    border-radius: 0px;
+}
+
+#page_title {
+    color: darkslategrey;
+    font-weight: bolder;
+}
+
+#note {
+    background-color: whitesmoke;
+    border-color: whitesmoke;
+}
+
+#generate_flights {
+    color: darkslategrey;
+    height: 63px;
+}
+
+#find_flights_btn {
+    background-color: lightblue;
+}
+
+.bottom-column {
+    float: bottom;
+    display: table-cell;
+    vertical-align: bottom;
+}
+
 
 .form-signin {
     max-width: 480px;
