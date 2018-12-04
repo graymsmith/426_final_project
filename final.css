@@ -7,11 +7,33 @@ body.login-body {
 
 body.reg-body {
     background-color: darkslategrey;
+    /*color: whitesmoke;*/
+}
+
+h2.title {
     color: whitesmoke;
 }
 
 .well {
     color: gray;
+}
+
+#depart_leav_loc_dropdown, #return_dep_loc_dropdown {
+    background-color: #ebebe0;
+    border-color: #ebebe0;
+    color: black;
+}
+
+#depart_arriv_loc_dropdown, #return_arriv_loc_dropdown {
+    background-color: #e6f7ff;
+    border-color: #e6f7ff;
+    color: black;
+}
+
+#departing_datepicker, #returning_datepicker {
+    background-color: #ffd6cc;
+    border-color: #ffd6cc;
+    color: black;
 }
 
 #departing_information, #returning_information {
@@ -42,7 +64,7 @@ body.reg-body {
 }
 
 #find_flights_btn {
-    background-color: lightblue;
+    background-color: lightgray;
 }
 
 .bottom-column {
@@ -50,7 +72,6 @@ body.reg-body {
     display: table-cell;
     vertical-align: bottom;
 }
-
 
 .form-signin {
     max-width: 480px;
