@@ -18,6 +18,10 @@ h2.title {
     color: gray;
 }
 
+.blue_background {
+    background-color: #19334d;
+}
+
 #depart_leav_loc_dropdown, #return_dep_loc_dropdown {
     background-color: #ebebe0;
     border-color: #ebebe0;
@@ -36,8 +40,25 @@ h2.title {
     color: black;
 }
 
+.colored_text {
+    color: gray;
+}
+
+#make_ticket_btn {
+    background-color: #0073e6;
+    border-color: #0073e6;
+    color: whitesmoke;
+}
+
 #departing_information, #returning_information {
     background-color: #264040;
+    color: whitesmoke;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#departing_flight_info, #returning_flight_info {
+    background-color: #12273b;
     color: whitesmoke;
     border-radius: 4px;
     padding: 10px;
