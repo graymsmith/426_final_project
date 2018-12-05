@@ -56,7 +56,9 @@ $(document).ready(() => {
 var build_interface = function () {
     let body = $('body');
 
-    body.empty();
+    //body.empty();
+
+    $('.container-fluid').remove();
 
     body.removeClass('login-body');
     body.addClass('reg-body');
@@ -343,18 +345,24 @@ $(document).on('click', '#find_flights_btn', function(e) {
 
                 if (i==(response.length-1) && (found_departure == 0 || found_return == 0)) {
                     console.log('did not find flight meeting requirements...');
+
                     $('#find_flights_btn').text("Find Flights");
+
                     //pop up a modal or something
+                    $('#no_can_do_modal').modal();
+
+
                 } else if (i==(response.length-1)) {
                     console.log('found two flights!, now finding instances');
+                    depart_departing_time_transformed = depart_departing_time.substring(11,16);
+                    depart_arriving_time_transformed = depart_arriving_time.substring(11,16);
+                    return_departing_time_transformed = return_departing_time.substring(11,16);
+                    return_arriving_time_transformed = return_arriving_time.substring(11,16);
                     find_instances();
                 }
             }
 
-            depart_departing_time_transformed = depart_departing_time.substring(11,16);
-            depart_arriving_time_transformed = depart_arriving_time.substring(11,16);
-            return_departing_time_transformed = return_departing_time.substring(11,16);
-            return_arriving_time_transformed = return_arriving_time.substring(11,16);
+
         },
         error: () => {
             console.log('error getting flights');
@@ -410,7 +418,9 @@ var find_instances = function () {
                 } else if (i==(response.length-1)) {
                     console.log('did not find flight meeting requirements :(');
                     $('#find_flights_btn').text("Find Flights");
+
                     //pop up a modal or something
+                    $('#no_instances_modal').modal();
                 }
 
             }
@@ -545,7 +555,7 @@ var make_new_interface = function() {
 
 
     //button stuff
-    let make_ticket_btn = $("<br><div id='make_ticket'><button class='bottom-column btn' id='make_ticket_btn' data-toggle=\"modal\" data-target=\"#exampleModal\">Ready to Commit? Get Tickets!</button></div><br>");
+    let make_ticket_btn = $("<br><div id='make_ticket'><button class='bottom-column btn' id='make_ticket_btn'>Ready to Commit? Get Tickets!</button></div><br>");
     outside_container_bottom.append(make_ticket_btn);
 
 
