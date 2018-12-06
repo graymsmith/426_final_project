@@ -1,8 +1,8 @@
 body.login-body {
     padding-top: 40px;
     padding-bottom: 40px;
-    background-color: lightgray;
-    color: darkslategrey;
+    background-color: darkslategrey;
+    color: lightgray;
 }
 
 body.reg-body {
@@ -22,9 +22,15 @@ h2.title {
     background-color: #19334d;
 }
 
+.orange_background {
+    background-color: #995c00;
+}
+
 #depart_leav_loc_dropdown, #return_dep_loc_dropdown {
     background-color: #ebebe0;
     border-color: #ebebe0;
+    /*background-color: #bfd9d9;*/
+    /*border-color: #bfd9d9;*/
     color: black;
 }
 
@@ -35,8 +41,8 @@ h2.title {
 }
 
 #departing_datepicker, #returning_datepicker {
-    background-color: #ffd6cc;
-    border-color: #ffd6cc;
+    background-color: #ffebe6;
+    border-color: #ffebe6;
     color: black;
 }
 
@@ -48,7 +54,17 @@ h2.title {
 
 }
 
+#go_home_btn {
+    margin-bottom: 18px;
+}
+
 #make_ticket_btn {
+    background-color: #0073e6;
+    border-color: #0073e6;
+    color: whitesmoke;
+}
+
+#ticket_submit_btn {
     background-color: #0073e6;
     border-color: #0073e6;
     color: whitesmoke;
@@ -56,6 +72,13 @@ h2.title {
 
 #departing_information, #returning_information {
     background-color: #264040;
+    color: whitesmoke;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#create_own_airport_div_info, #create_own_flight_div_info {
+    background-color: #663d00;
     color: whitesmoke;
     border-radius: 4px;
     padding: 10px;
@@ -78,6 +101,10 @@ h2.title {
     font-weight: bolder;
 }
 
+#not_satisfied_btn {
+    color: gray;
+}
+
 #note {
     background-color: whitesmoke;
     border-color: whitesmoke;
@@ -90,6 +117,7 @@ h2.title {
 
 #find_flights_btn {
     background-color: lightgray;
+    color: darkslategray;
 }
 
 .bottom-column {

@@ -20,6 +20,8 @@ $(document).ready(() => {
     login_btn.on('click', () => {
         //alert('clicked');
 
+        //$('#get_tickets_modal').modal();
+
         let user = $('#login_user').val();
         let pass = $('#login_pass').val();
 
@@ -54,6 +56,17 @@ $(document).ready(() => {
 
 
 var build_interface = function () {
+
+    let total_body = $('.orange_background');
+    let other_total_body = $('.blue_background');
+
+    total_body.addClass('reg-body');
+    total_body.removeClass('orange_background');
+
+    other_total_body.addClass('reg-body');
+    other_total_body.removeClass('blue_background');
+
+
     let body = $('body');
 
     //body.empty();
@@ -79,7 +92,7 @@ var build_interface = function () {
     let page_title = $("<h1 class='title' id='page_title'>Trip Planner</h1>");
     outside_container_title.append(page_title);
 
-    let page_description = $("<h5 class='well' id='note'>This site lets you plan a trip. Not satisfied with the below options? Click <i id='not_satisfied_btn'>here</i>.</i></h5>")
+    let page_description = $("<h5 class='well' id='note'>This site lets you plan a trip. Not satisfied with the below options? Click <i id='not_satisfied_btn'><a>here</a></i>.</i></h5>")
     outside_container_title.append(page_description);
 
     // put row and two columns in bottom container
@@ -174,12 +187,6 @@ var build_interface = function () {
 
 
 };
-
-
-
-$(document).on('click', '#not_satisfied_btn', function(e) {
-   console.log('worked');
-});
 
 $(document).on('click', '#departing_datepicker', function(e) {
     $('#departing_datepicker').datepicker('show');
@@ -474,6 +481,11 @@ var make_new_interface = function() {
     total_body.addClass('blue_background');
     total_body.removeClass('reg-body');
 
+    let home_button = $("<button class='bottom-column btn' id='go_home_btn'>Home</button><br>");
+    $('#title_page_stuff').append(home_button);
+
+    // ---------
+
     let outside_row = $("<div class='row' id='outside_row'></div>");
     outside_container_bottom.append(outside_row);
 
@@ -565,9 +577,182 @@ var make_new_interface = function() {
 $(document).on('click', '#make_ticket_btn', function(e) {
     //console.log('ooo yeah');
 
-    //need first name, last name, age, gender, instance_id, seat_id
+    //need first name, last name, age, gender, instance_id, seat_id (could just give seat_id of 5 every time or something)
+
+    //instance id and seat id are no longer required
+
+    //pop up get tickets modal
+
+    $('#get_tickets_modal').modal();
+
+
+});
+
+var depart_ticket_success = 0, return_ticket_success = 0;
+
+$(document).on('click', '#ticket_submit_btn', function(e) {
+    depart_ticket_success = 0;
+    return_ticket_success = 0;
+
+    let fname = $('#ticket_fname').val();
+    let lname = $('#ticket_lname').val();
+    let age = $('#ticket_age').val();
+    let gender = $('#ticket_gender').val();
+
+    // console.log(fname);
+    // console.log(lname);
+    // console.log(age);
+    // console.log(gender);
+    //
+    // console.log(depart_instance_id);
+    // console.log(return_instance_id);
+
+    //put departing ticket info in database
+    $.ajax({
+        url: root_url+'/tickets',
+        type: 'POST',
+        dataType: 'json',
+        xhrFields: { withCredentials: true },
+        data: {
+            "ticket": {
+                "first_name": ''+fname+'',
+                "last_name": ''+lname+'',
+                "age": ''+age+'',
+                "gender": ''+gender+'',
+                "is_purchased": true,
+                "instance_id": ''+depart_instance_id+''
+            }
+        },
+        success: (response) => {
+            console.log('success submitting departing ticket!');
+            depart_ticket_success = 1;
+            put_return_ticket_in();
+        },
+        error: () => {
+            console.log('error submitting departing ticket');
+        }
+    });
+
 
 
 
 });
+
+
+var put_return_ticket_in = function() {
+    let fname = $('#ticket_fname').val();
+    let lname = $('#ticket_lname').val();
+    let age = $('#ticket_age').val();
+    let gender = $('#ticket_gender').val();
+
+    //put returning ticket info in database
+    $.ajax({
+        url: root_url+'/tickets',
+        type: 'POST',
+        dataType: 'json',
+        xhrFields: { withCredentials: true },
+        data: {
+            "ticket": {
+                "first_name": ''+fname+'',
+                "last_name": ''+lname+'',
+                "age": ''+age+'',
+                "gender": ''+gender+'',
+                "is_purchased": true,
+                "instance_id": ''+return_instance_id+''
+            }
+        },
+        success: (response) => {
+            console.log('success submitting returning ticket!');
+            return_ticket_success = 1;
+            if(depart_ticket_success == 1 && return_ticket_success == 1){
+                console.log('found both!!!!!!');
+                $('#ticket_modal_body').empty()
+                $('#ticket_submit_btn').remove();
+                $('#ticket_modal_body').append($("<p>Congrats! You're tickets have been booked.</p>"));
+
+            }else {
+                console.log('something wrong...');
+            }
+        },
+        error: () => {
+            console.log('error submitting returning ticket');
+        }
+    });
+
+};
+
+$(document).on('click', '#go_home_btn', function(e) {
+    console.log('we going home');
+
+    build_interface();
+
+});
+
+$(document).on('click', '#not_satisfied_btn', function(e) {
+    let body = $('.reg-body');
+    let other_total_body = $('.blue_background');
+
+    body.addClass('orange_background');
+    body.removeClass('reg-body');
+
+    other_total_body.addClass('orange_background');
+    other_total_body.removeClass('blue_background');
+
+
+    $('#go_home_btn').remove();
+    $('br').remove();
+
+    $('#no_can_do_modal').modal('hide');
+    $('#no_instances_modal').modal('hide');
+
+    //console.log('worked');
+
+    $('#bottom_stuff').empty();
+
+    let outside_container_bottom = $('#bottom_stuff');
+
+    outside_container_bottom.addClass('orange_background');
+
+    let total_body = $('.reg-body');
+
+    total_body.addClass('orange_background');
+    total_body.removeClass('reg-body');
+
+    let home_button = $("<button class='bottom-column btn' id='go_home_btn'>Home</button><br>");
+    $('#title_page_stuff').append(home_button);
+
+    // ---------
+
+    let outside_row = $("<div class='row' id='outside_row'></div>");
+    outside_container_bottom.append(outside_row);
+
+    // create airport stuff
+
+    let create_own_airport_div = $("<div id='create_airport_div' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Create Your Own Airport</h2></div>");
+    outside_row.append(create_own_airport_div);
+
+    let create_own_airport_div_information = $("<div id='create_own_airport_div_info'></div>");
+    create_own_airport_div.append(create_own_airport_div_information);
+
+    create_own_airport_div_information.append($("<p>do some stuff</p>"));
+
+    // create flight stuff
+
+    let create_own_flight_div = $("<div id='create_flight_div' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Create Your Own Flight and Instance</h2></div>");
+    outside_row.append(create_own_flight_div);
+
+    let create_own_flight_div_information = $("<div id='create_own_flight_div_info'></div>");
+    create_own_flight_div.append(create_own_flight_div_information);
+
+    create_own_flight_div_information.append($("<p>do some stuff</p>"));
+
+
+
+
+});
+
+
+
+
+
 

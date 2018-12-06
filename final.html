@@ -46,7 +46,7 @@
 					<!--</button>-->
 				</div>
 				<div class="modal-body">
-					We could not find a flight that matched your specifications. Click <i id='not_satisfied_btn'>here</i> to make your dream trip.
+					We could not find flights that matched your specifications. Click <i id='not_satisfied_btn'><a>here</a></i> to make your dream trip.
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -62,16 +62,52 @@
 			<div class="modal-content" id="no_instances_modal_styling">
 				<div class="modal-header">
 					<h4 class="modal-title" id="no_instances_modal_title">Uh Oh!</h4>
-					<!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-					<!--<span aria-hidden="true">&times;</span>-->
-					<!--</button>-->
 				</div>
 				<div class="modal-body">
-					We found your flights, but there were not any running on the specified days. Click <i id='not_satisfied_btn'>here</i> to make your dream trip.
+					We found your flights, but there were not any running on the specified days. Click <i id='not_satisfied_btn'><a>here</a></i> to make your dream trip.
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<!--<button type="button" class="btn btn-primary">Save changes</button>-->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- get tickets modal -->
+	<div class="modal fade" id="get_tickets_modal" tabindex="-1" role="dialog" aria-labelledby="get_tickets_modal_Label" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content" id="get_tickets_modal_styling">
+				<div class="modal-header">
+					<h4 class="modal-title" id="get_tickets_modal_title">Get Tickets!</h4>
+				</div>
+				<div class="modal-body" id="ticket_modal_body">
+					<!--First name: <input type="text" name="fname" id="ticket_fname"><br>-->
+					<!--Last name: <input type="text" name="lname" id="ticket_lname"><br>-->
+					<!--Age: <input type="text" name="lname" id="ticket_age"><br>-->
+					<!--Gender: <input type="text" name="lname" id="ticket_gender"><br>-->
+					<form>
+						<div class="form-group">
+							<label>First Name:</label>
+							<input type="text" class="form-control" id="ticket_fname" aria-describedby="emailHelp" placeholder="Enter first name">
+							<!--<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
+						</div>
+						<div class="form-group">
+							<label>Last Name:</label>
+							<input type="text" class="form-control" id="ticket_lname" placeholder="Enter last name">
+						</div>
+						<div class="form-group">
+							<label>Age:</label>
+							<input type="text" class="form-control" id="ticket_age" placeholder="Enter age">
+						</div>
+						<div class="form-group">
+							<label>Gender:</label>
+							<input type="text" class="form-control" id="ticket_gender" placeholder="Enter gender">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" id="ticket_submit_btn">Submit to book tickets!</button>
 				</div>
 			</div>
 		</div>
