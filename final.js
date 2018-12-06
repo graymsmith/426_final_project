@@ -96,7 +96,7 @@ var build_interface = function () {
 
 
 
-    
+
     // define and append weather api stuff
 
 
