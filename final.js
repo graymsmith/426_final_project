@@ -69,12 +69,38 @@ var build_interface = function () {
 
     let body = $('body');
 
+    //remove all sidebar stuff that you need to remove
+    $('#weather_title').remove();
+
     //body.empty();
 
     $('.container-fluid').remove();
+    $('#left_column').remove();
 
     body.removeClass('login-body');
     body.addClass('reg-body');
+
+    // make outermost_row_sidebar row
+
+    let outermost_row_for_sidebar = $("<div class='row' id='outermost_row_for_sidebar'></div>");
+    body.append(outermost_row_for_sidebar);
+
+    //now need two columns, one for everything I have now and one for sidebar
+
+    let left_column = $("<div id='left_column' class='col-sm-9 col-md-9 col-lg-9'></div>");
+    outermost_row_for_sidebar.append(left_column);
+
+    let right_column = $("<div id='sidebar' class='col-sm-3 col-md-3 col-lg-3'><h2 class='title' id='weather_title'>Weather</h2></div>");
+    outermost_row_for_sidebar.append(right_column);
+
+
+
+
+    
+    // define and append weather api stuff
+
+
+
 
     // define and append top and bottom container fluids
 
@@ -82,9 +108,7 @@ var build_interface = function () {
 
     let outside_container_bottom = $("<div class='container-fluid' id='bottom_stuff'></div>");
 
-
-
-    body.append(outside_container_title);
+    left_column.append(outside_container_title);
     outside_container_title.after(outside_container_bottom);
 
     // put title and note in top container
@@ -94,6 +118,13 @@ var build_interface = function () {
 
     let page_description = $("<h5 class='well' id='note'>This site lets you plan a trip. Not satisfied with the below options? Click <i id='not_satisfied_btn'><a>here</a></i>.</i></h5>")
     outside_container_title.append(page_description);
+
+    generate_bottom_container_stuff();
+
+};
+
+var generate_bottom_container_stuff = function() {
+    let outside_container_bottom = $('#bottom_stuff');
 
     // put row and two columns in bottom container
 
@@ -155,8 +186,6 @@ var build_interface = function () {
     returning_day_text.datepicker();
 
 
-
-
     // append submit button here
 
     let generate_flights_btn = $("<br><div id='generate_flights'><button class='bottom-column btn' id='find_flights_btn'>Find Flights</button></div>");
@@ -185,8 +214,7 @@ var build_interface = function () {
         }
     });
 
-
-};
+}
 
 $(document).on('click', '#departing_datepicker', function(e) {
     $('#departing_datepicker').datepicker('show');
@@ -684,9 +712,29 @@ var put_return_ticket_in = function() {
 $(document).on('click', '#go_home_btn', function(e) {
     console.log('we going home');
 
-    build_interface();
+    //build_interface();
+
+    go_home();
 
 });
+
+var go_home = function() {
+    $('#bottom_stuff').empty();
+    $('#go_home_btn').remove();
+    $('br').remove();
+
+    let total_body = $('.orange_background');
+    let other_total_body = $('.blue_background');
+
+    total_body.addClass('reg-body');
+    total_body.removeClass('orange_background');
+
+    other_total_body.addClass('reg-body');
+    other_total_body.removeClass('blue_background');
+
+    generate_bottom_container_stuff();
+
+};
 
 $(document).on('click', '#not_satisfied_btn', function(e) {
     let body = $('.reg-body');
@@ -745,7 +793,6 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
     create_own_flight_div.append(create_own_flight_div_information);
 
     create_own_flight_div_information.append($("<p>do some stuff</p>"));
-
 
 
 

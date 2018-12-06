@@ -22,6 +22,19 @@ h2.title {
     background-color: #19334d;
 }
 
+#sidebar {
+    background-color: gray;
+}
+
+#left_column {
+    padding-right: 1px;
+}
+
+#weather_title {
+    text-align: center;
+    color: whitesmoke;
+}
+
 .orange_background {
     background-color: #995c00;
 }
