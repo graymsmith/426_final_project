@@ -1,4 +1,5 @@
 var root_url = "http://comp426.cs.unc.edu:3001";
+var weather_root_url = "https://api.darksky.net/forecast/5df59b1806b8c925f9502f5a98a80be0/";
 
 $(document).ready(() => {
 
@@ -90,17 +91,21 @@ var build_interface = function () {
     let left_column = $("<div id='left_column' class='col-sm-9 col-md-9 col-lg-9'></div>");
     outermost_row_for_sidebar.append(left_column);
 
-    let right_column = $("<div id='sidebar' class='col-sm-3 col-md-3 col-lg-3'><h2 class='title' id='weather_title'>Weather</h2></div>");
+    let right_column = $("<div id='sidebar' class='col-sm-3 col-md-3 col-lg-3'></div>");
+        //"<h2 class='title' id='weather_title'>Weather</h2></div>");
     outermost_row_for_sidebar.append(right_column);
-
-
-
-
 
     // define and append weather api stuff
 
+    let weather_container_title = $("<div class='container-fluid' id='weather_title_stuff'></div>");
 
+    let weather_container_bottom = $("<div class='container-fluid' id='weather_stuff'></div>");
+    right_column.append(weather_container_title);
 
+    weather_container_title.after(weather_container_bottom);
+
+    let weather_title = $("<h1 class='title' id='weather_title'>Weather</h1>");
+    weather_container_title.append(weather_title);
 
     // define and append top and bottom container fluids
 
@@ -121,7 +126,48 @@ var build_interface = function () {
 
     generate_bottom_container_stuff();
 
+    generate_weather_container_stuff();
+
 };
+
+var generate_weather_container_stuff = function() {
+    let weather_container_bottom = $('#weather_stuff');
+
+    let weather_information = $("<div id='weather_information'></div>");
+    weather_container_bottom.append(weather_information);
+
+    let weather_location = $("<div id='departing_leaving_location'><p>Airport: </p></div>");
+    weather_information.append(weather_location);
+
+    let weather_location_dropdown = $("<select class='form-control' id='weather_loc_dropdown'><option value='' disabled selected>select your option</option></select>");
+    weather_information.append(weather_location_dropdown);
+
+    // append submit button here
+
+    let generate_weather_btn = $("<br><div id='generate_weather'><button class='bottom-column btn' id='generate_weather_btn'>Find Weather</button></div>");
+    weather_container_bottom.append(generate_weather_btn);
+
+    //Backend to get airports
+
+    $.ajax({
+        url: root_url+'/airports',
+        type: 'GET',
+        dataType: 'json',
+        xhrFields: { withCredentials: true },
+        success: (response) => {
+            for (let i=0; i<response.length; i++) {
+                //alert('got airlines');
+                weather_location_dropdown.append($('<option>'+response[i].name+'</option>'));
+            }
+            //console.log(response);
+        },
+        error: () => {
+            console.log('error getting airports');
+        }
+    });
+
+
+}
 
 var generate_bottom_container_stuff = function() {
     let outside_container_bottom = $('#bottom_stuff');
@@ -239,7 +285,74 @@ var depart_airline_id, return_airline_id;
 
 var depart_instance_id, return_instance_id;
 
+var weather_airport_text, weather_airport_id, weather_latitude, weather_longitude;
 
+var currentDay, dailySummary, weather0, weather1, weather2, weather3, weather4, weather5, weather6, weather7;
+
+
+
+$(document).on('click', '#generate_weather_btn', function(e) {
+    //console.log('clicked generate flights');
+
+    $('#generate_weather_btn').text("Finding weather...");
+
+    weather_airport_text = $("#weather_loc_dropdown").val();
+
+    var today = new Date();
+    currentDay = today.getDay();
+
+    //$.support.cors = true;
+    //find airport id from name of airport
+    $.ajax({
+        url: root_url+'/airports',
+        type: 'GET',
+        dataType: 'json',
+        xhrFields: { withCredentials: true },
+        success: (response) => {
+            for (let i=0; i<response.length; i++) {
+                let airport_name = response[i].name;
+                let airport_id = response[i].id;
+                let airport_latitude = response[i].latitude;
+                let airport_longitude = response[i].longitude;
+
+                if (airport_name == weather_airport_text) {
+                    weather_airport_id = airport_id;
+                    weather_latitude = airport_latitude;
+                    weather_longitude = airport_longitude;
+                    // console.log('found departing leave!!!!');
+                    // console.log(airport_name);
+                    // console.log(departing_leave_airport_id);
+                    alert(weather_latitude);
+                }
+            }
+
+            $.ajax({
+                url: 'https://api.darksky.net/forecast/5df59b1806b8c925f9502f5a98a80be0/' + weather_latitude + "," + weather_longitude,
+                type: 'GET',
+                dataType: 'jsonp',
+                crossDomain: true,
+               // xhrFields: {withCredentials: true},
+                success: (response) => {
+                    dailySummary = response;
+                    dailySummary = response.daily.summary;
+                    alert(dailySummary);
+                },
+                error: () => {
+                    console.log('error getting weather');
+                    alert(weather_root_url + weather_latitude + "," + weather_longitude);
+
+                }
+            });
+            //console.log(response);
+        },
+        error: () => {
+            console.log('error getting airports');
+        }
+    });
+
+
+
+});
 
 $(document).on('click', '#find_flights_btn', function(e) {
     //console.log('clicked generate flights');
@@ -736,6 +849,10 @@ var go_home = function() {
 
 };
 
+
+
+
+
 $(document).on('click', '#not_satisfied_btn', function(e) {
     let body = $('.reg-body');
     let other_total_body = $('.blue_background');
@@ -782,7 +899,43 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
     let create_own_airport_div_information = $("<div id='create_own_airport_div_info'></div>");
     create_own_airport_div.append(create_own_airport_div_information);
 
-    create_own_airport_div_information.append($("<p>do some stuff</p>"));
+    create_own_airport_div_information.append($("<p>Airport Name</p>"));
+
+    let coa_airport_input = $("<input id='coa_airport_input' value=''</input>");
+    create_own_airport_div_information.append(coa_airport_input);
+
+    create_own_airport_div_information.append($("<p>Airport Code</p>"));
+
+    let coa_code_input = $("<input id='coa_code_input' value=''</input>");
+    create_own_airport_div_information.append(coa_code_input);
+
+    create_own_airport_div_information.append($("<p>Airport Latitude</p>"));
+
+    let coa_latitude_input = $("<input id='coa_latitude_input' value=''</input>");
+    create_own_airport_div_information.append(coa_latitude_input);
+
+    create_own_airport_div_information.append($("<p>Airport Longitude</p>"));
+
+    let coa_longitude_input = $("<input id='coa_longitude_input' value=''</input>");
+    create_own_airport_div_information.append(coa_longitude_input);
+
+    create_own_airport_div_information.append($("<p>Airport City</p>"));
+
+    let coa_city_input = $("<input id='coa_city_input' value=''</input>");
+    create_own_airport_div_information.append(coa_city_input);
+
+    create_own_airport_div_information.append($("<p>Airport State</p>"));
+
+    let coa_state_input = $("<input id='coa_state_input' value=''</input>");
+    create_own_airport_div_information.append(coa_state_input);
+
+   // create_own_airport_div_information.append($("<p>Airport City URL</p>"));
+
+    //let coa_city_url_input = $("<input id='coa_city_url_input' value=''</input>");
+    //create_own_airport_div_information.append(coa_city_url_input);
+
+    let create_airport_btn = $("<br><div id='create_airport'><button class='bottom-column btn' id='create_airport_btn'>Create Airport</button></div><br>");
+    create_own_airport_div_information.append(create_airport_btn);
 
     // create flight stuff
 
@@ -794,10 +947,64 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
 
     create_own_flight_div_information.append($("<p>do some stuff</p>"));
 
-
-
 });
 
+var create_airport_name, create_airport_code, create_airport_latitude, create_airport_longitude,
+    create_airport_city, create_airport_state/*, create_airport_city_url*/ ="";
+
+$(document).on('click', '#create_airport_btn', function(e) {
+
+
+    create_airport_name = $('#coa_airport_input').val();
+    create_airport_code = $('#coa_code_input').val();
+    create_airport_latitude = $('#coa_latitude_input').val();
+    create_airport_longitude = $('#coa_longitude_input').val();
+    create_airport_city = $('#coa_city_input').val();
+    create_airport_state = $('#coa_state_input').val();
+  //  create_airport_city_url = $('#coa_city_url_input').val();
+
+    //alert(create_airport_name);
+    //alert(create_airport_code);
+
+    if (create_airport_code == "" || create_airport_name == "" || create_airport_latitude == "" || create_airport_longitude == ""
+        || create_airport_city == "" || create_airport_state == ""/* || create_airport_city_url == ""*/)
+    {
+        alert("Please fill out all 7 fields and try again");
+    }
+
+
+
+    else
+    {
+        $.ajax({
+            url: root_url + '/airports',
+            type: 'POST',
+            dataType: 'json',
+            xhrFields: {withCredentials: true},
+            data: {
+                "airport": {
+                    "name": ''+create_airport_name+'',
+                    "code": ''+create_airport_code+'',
+                    "latitude": ""+create_airport_latitude+"",
+                    "longitude": ""+create_airport_longitude+"",
+                    "city": ""+create_airport_city+"",
+                    "state": ""+create_airport_state+""
+                }
+            },
+            success: (response) => {
+                alert("worked");
+            },
+            error: (ts) => {
+                //alert('not logged in');
+               // alert(ts.responseText);
+                //alert("error");
+                //alert(create_airport_name);
+                //alert(create_airport_code);
+            }
+        });
+    }
+
+});
 
 
 

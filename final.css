@@ -59,6 +59,14 @@ h2.title {
     color: black;
 }
 
+#weather_loc_dropdown {
+    background-color: #ebebe0;
+    border-color: #ebebe0;
+    /*background-color: #bfd9d9;*/
+    /*border-color: #bfd9d9;*/
+    color: black;
+}
+
 .colored_text {
     color: gray;
 }
@@ -77,6 +85,13 @@ h2.title {
     color: whitesmoke;
 }
 
+#create_airport_btn {
+    background-color: #0073e6;
+    border-color: #0073e6;
+    color: whitesmoke;
+    margin-top: 10px;
+}
+
 #ticket_submit_btn {
     background-color: #0073e6;
     border-color: #0073e6;
@@ -84,6 +99,13 @@ h2.title {
 }
 
 #departing_information, #returning_information {
+    background-color: #264040;
+    color: whitesmoke;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#weather_information {
     background-color: #264040;
     color: whitesmoke;
     border-radius: 4px;
@@ -109,6 +131,11 @@ h2.title {
     border-radius: 0px;
 }
 
+#weather_page_stuff {
+    background-color: lightgray;
+    border-radius: 0px;
+}
+
 #page_title {
     color: darkslategrey;
     font-weight: bolder;
@@ -128,7 +155,17 @@ h2.title {
     height: 63px;
 }
 
+#generate_weather {
+    color: darkslategrey;
+    height: 63px;
+}
+
 #find_flights_btn {
+    background-color: lightgray;
+    color: darkslategray;
+}
+
+#generate_weather_btn {
     background-color: lightgray;
     color: darkslategray;
 }
@@ -177,5 +214,9 @@ h2.title {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+}
+
+#coa_airport_input, #coa_code_input, #coa_latitude_input, #coa_longitude_input, #coa_city_input, #coa_state_input, #coa_city_url_input {
+    color: black
 }
 
