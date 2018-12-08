@@ -179,7 +179,7 @@ var generate_bottom_container_stuff = function() {
 
     // all things with departing column below
 
-    let departing = $("<div id='departing' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Departing Information</h2></div>");
+    let departing = $("<div id='departing' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Departing Information</h2></div>");
     outside_row.append(departing);
 
     let departing_information = $("<div id='departing_information'></div>");
@@ -206,7 +206,7 @@ var generate_bottom_container_stuff = function() {
 
     // all things with returning column below
 
-    let returning = $("<div id='returning' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Returning Information</h2></div>");
+    let returning = $("<div id='returning' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Returning Information</h2></div>");
     outside_row.append(returning);
 
     let returning_information = $("<div id='returning_information'></div>");
@@ -834,7 +834,7 @@ $(document).on('click', '#go_home_btn', function(e) {
 var go_home = function() {
     $('#bottom_stuff').empty();
     $('#go_home_btn').remove();
-    $('br').remove();
+    $('#title_page_stuff br').remove();
 
     let total_body = $('.orange_background');
     let other_total_body = $('.blue_background');
@@ -865,7 +865,8 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
 
 
     $('#go_home_btn').remove();
-    $('br').remove();
+    //$('br').remove();
+    $('#title_page_stuff br').remove();
 
     $('#no_can_do_modal').modal('hide');
     $('#no_instances_modal').modal('hide');
@@ -893,41 +894,52 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
 
     // create airport stuff
 
-    let create_own_airport_div = $("<div id='create_airport_div' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Create Your Own Airport</h2></div>");
+    let create_own_airport_div = $("<div id='create_airport_div' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Create Your Own Airport</h2></div>");
     outside_row.append(create_own_airport_div);
 
     let create_own_airport_div_information = $("<div id='create_own_airport_div_info'></div>");
     create_own_airport_div.append(create_own_airport_div_information);
 
-    create_own_airport_div_information.append($("<p>Airport Name</p>"));
+    create_own_airport_div_information.append($("<p>Airport Name: </p>"));
 
-    let coa_airport_input = $("<input id='coa_airport_input' value=''</input>");
+    let coa_airport_input = $("<input class='form-control' id='coa_airport_input' placeholder='e.g. Raleigh Durham International'></input><br>");
     create_own_airport_div_information.append(coa_airport_input);
 
-    create_own_airport_div_information.append($("<p>Airport Code</p>"));
+    create_own_airport_div_information.append($("<p>Airport Code: </p>"));
 
-    let coa_code_input = $("<input id='coa_code_input' value=''</input>");
+    let coa_code_input = $("<input class='form-control' id='coa_code_input' placeholder='e.g. RDU'></input><br>");
     create_own_airport_div_information.append(coa_code_input);
 
-    create_own_airport_div_information.append($("<p>Airport Latitude</p>"));
+    create_own_airport_div_information.append($("<p>Airport Latitude: </p>"));
 
-    let coa_latitude_input = $("<input id='coa_latitude_input' value=''</input>");
+    let coa_latitude_input = $("<input class='form-control' id='coa_latitude_input' placeholder='e.g. 31.5'></input><br>");
     create_own_airport_div_information.append(coa_latitude_input);
 
-    create_own_airport_div_information.append($("<p>Airport Longitude</p>"));
+    create_own_airport_div_information.append($("<p>Airport Longitude: </p>"));
 
-    let coa_longitude_input = $("<input id='coa_longitude_input' value=''</input>");
+    let coa_longitude_input = $("<input class='form-control' id='coa_longitude_input' placeholder='e.g. -100.4'></input><br>");
     create_own_airport_div_information.append(coa_longitude_input);
 
-    create_own_airport_div_information.append($("<p>Airport City</p>"));
+    create_own_airport_div_information.append($("<p>Airport City: </p>"));
 
-    let coa_city_input = $("<input id='coa_city_input' value=''</input>");
+    let coa_city_input = $("<input class='form-control' id='coa_city_input' placeholder='e.g. Raleigh'></input><br>");
     create_own_airport_div_information.append(coa_city_input);
 
-    create_own_airport_div_information.append($("<p>Airport State</p>"));
+    create_own_airport_div_information.append($("<p>Airport State: </p>"));
 
-    let coa_state_input = $("<input id='coa_state_input' value=''</input>");
+    let coa_state_input = $("<select class='form-control' id='coa_state_input' placeholder='e.g. NC'><option disabled selected>select your option</option></select><br>");
     create_own_airport_div_information.append(coa_state_input);
+
+    let states_array = ["AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC",
+        "DE", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA",
+        "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE",
+        "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI", "SC",
+        "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY"];
+
+    for(let i=0; i<states_array.length; i++) {
+        coa_state_input.append($('<option>'+states_array[i]+'</option>'));
+    }
+
 
    // create_own_airport_div_information.append($("<p>Airport City URL</p>"));
 
@@ -939,7 +951,7 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
 
     // create flight stuff
 
-    let create_own_flight_div = $("<div id='create_flight_div' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Create Your Own Flight and Instance</h2></div>");
+    let create_own_flight_div = $("<div id='create_flight_div' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Create Your Own Flight and Instance</h2></div>");
     outside_row.append(create_own_flight_div);
 
     let create_own_flight_div_information = $("<div id='create_own_flight_div_info'></div>");
