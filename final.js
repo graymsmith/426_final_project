@@ -95,8 +95,6 @@ var build_interface = function () {
 
 
 
-
-
     // define and append weather api stuff
 
 
@@ -133,7 +131,7 @@ var generate_bottom_container_stuff = function() {
 
     // all things with departing column below
 
-    let departing = $("<div id='departing' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Departing Information</h2></div>");
+    let departing = $("<div id='departing' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Departing Information</h2></div>");
     outside_row.append(departing);
 
     let departing_information = $("<div id='departing_information'></div>");
@@ -160,7 +158,7 @@ var generate_bottom_container_stuff = function() {
 
     // all things with returning column below
 
-    let returning = $("<div id='returning' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Returning Information</h2></div>");
+    let returning = $("<div id='returning' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Returning Information</h2></div>");
     outside_row.append(returning);
 
     let returning_information = $("<div id='returning_information'></div>");
@@ -286,49 +284,73 @@ $(document).on('click', '#find_flights_btn', function(e) {
 
     //var
 
-    //find airport id from name of airport
+    //find airport id from name of airport (with filtering)
+
     $.ajax({
-        url: root_url+'/airports',
+            url: root_url+'/airports?filter[name]='+departing_leave_airport_text,
+            type: 'GET',
+            dataType: 'json',
+            xhrFields: { withCredentials: true },
+            success: (response) => {
+               //console.log(response);
+                for (let i=0; i<response.length; i++) {
+                    let airport_id = response[i].id;
+                    departing_leave_airport_id = airport_id;
+                }
+            },
+            error: () => {
+                console.log('error getting departing departing airport');
+            }
+    });
+
+    $.ajax({
+        url: root_url+'/airports?filter[name]='+departing_arrive_airport_text,
         type: 'GET',
         dataType: 'json',
         xhrFields: { withCredentials: true },
         success: (response) => {
-            for (let i=0; i<response.length; i++) {
-                let airport_name = response[i].name;
-                let airport_id = response[i].id;
-
-                if (airport_name == departing_leave_airport_text) {
-                    departing_leave_airport_id = airport_id;
-                    // console.log('found departing leave!!!!');
-                    // console.log(airport_name);
-                    // console.log(departing_leave_airport_id);
-                }
-
-                if (airport_name == departing_arrive_airport_text) {
-                    departing_arrive_airport_id = airport_id;
-                    // console.log('found departing arrive!!!!');
-                    // console.log(airport_name);
-                    // console.log(departing_arrive_airport_id);
-                }
-
-                if (airport_name == returning_depart_airport_text) {
-                    returning_depart_airport_id = airport_id;
-                    // console.log('found returning depart!!!!');
-                    // console.log(airport_name);
-                    // console.log(returning_depart_airport_id);
-                }
-
-                if (airport_name == returning_arrive_airport_text) {
-                    returning_arrive_airport_id = airport_id;
-                    // console.log('found returning arrive!!!!');
-                    // console.log(airport_name);
-                    // console.log(returning_arrive_airport_id);
-                }
-            }
             //console.log(response);
+            for (let i=0; i<response.length; i++) {
+                let airport_id = response[i].id;
+                departing_arrive_airport_id = airport_id;
+            }
         },
         error: () => {
-            console.log('error getting airports');
+            console.log('error getting departing arriving airport');
+        }
+    });
+
+    $.ajax({
+        url: root_url+'/airports?filter[name]='+returning_depart_airport_text,
+        type: 'GET',
+        dataType: 'json',
+        xhrFields: { withCredentials: true },
+        success: (response) => {
+            //console.log(response);
+            for (let i=0; i<response.length; i++) {
+                let airport_id = response[i].id;
+                returning_depart_airport_id = airport_id;
+            }
+        },
+        error: () => {
+            console.log('error getting returning departing airport');
+        }
+    });
+
+    $.ajax({
+        url: root_url+'/airports?filter[name]='+returning_arrive_airport_text,
+        type: 'GET',
+        dataType: 'json',
+        xhrFields: { withCredentials: true },
+        success: (response) => {
+            //console.log(response);
+            for (let i=0; i<response.length; i++) {
+                let airport_id = response[i].id;
+                returning_arrive_airport_id = airport_id;
+            }
+        },
+        error: () => {
+            console.log('error getting returning arriving airport');
         }
     });
 
@@ -337,6 +359,54 @@ $(document).on('click', '#find_flights_btn', function(e) {
 
     found_departure_flight_id = 0;
     found_return_flight_id = 0;
+
+    // // find flight from above ids with filtering for departure and return
+    //
+    // // find departure flight
+    // $.ajax({
+    //     url: root_url+'/flights?filter[departure_id]='+departing_leave_airport_id+'&filter[arrival_id]='+departing_arrive_airport_id,
+    //     type: 'GET',
+    //     dataType: 'json',
+    //     xhrFields: { withCredentials: true },
+    //     success: (response) => {
+    //         console.log(response);
+    //         // for (let i=0; i<response.length; i++) {
+    //         //     console.log(response[i]);
+    //         //     found_departure_flight_id = response[i].id;
+    //         //     depart_departing_time = response[i].departs_at;
+    //         //     depart_arriving_time = response[i].arrives_at;
+    //         //     depart_airline_id = response[i].airline_id;
+    //         //     found_departure = 1;
+    //         // }
+    //     },
+    //     error: () => {
+    //         console.log('error getting departing flight');
+    //     }
+    // });
+    //
+    // // find return flight
+    // $.ajax({
+    //     url: root_url+'/flights?filter[departure_id]='+returning_depart_airport_id+'&filter[arrival_id]='+returning_arrive_airport_id,
+    //     type: 'GET',
+    //     dataType: 'json',
+    //     xhrFields: { withCredentials: true },
+    //     success: (response) => {
+    //         console.log(response);
+    //         // for (let i=0; i<response.length; i++) {
+    //         //     console.log(response[i]);
+    //         //     found_return_flight_id = response[i].id;
+    //         //     return_departing_time = response[i].departs_at;
+    //         //     return_arriving_time = response[i].arrives_at;
+    //         //     return_airline_id = response[i].airline_id;
+    //         //     found_return = 1;
+    //         // }
+    //     },
+    //     error: () => {
+    //         console.log('error getting returning flight');
+    //     }
+    // });
+
+
 
     //find flight from above ids for both departure and return
     $.ajax({
@@ -519,7 +589,7 @@ var make_new_interface = function() {
 
     // all things with departing column below
 
-    let departing = $("<div id='departing' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Departing Flight</h2></div>");
+    let departing = $("<div id='departing' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Departing Flight</h2></div>");
     outside_row.append(departing);
 
     let departing_information = $("<div id='departing_flight_info'></div>");
@@ -557,7 +627,7 @@ var make_new_interface = function() {
 
     // all things with returning column below
 
-    let returning = $("<div id='returning' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Returning Flight</h2></div>");
+    let returning = $("<div id='returning' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Returning Flight</h2></div>");
     outside_row.append(returning);
 
     let returning_information = $("<div id='returning_flight_info'></div>");
@@ -721,7 +791,8 @@ $(document).on('click', '#go_home_btn', function(e) {
 var go_home = function() {
     $('#bottom_stuff').empty();
     $('#go_home_btn').remove();
-    $('br').remove();
+    //$('br').remove();
+    $('#title_page_stuff br').remove();
 
     let total_body = $('.orange_background');
     let other_total_body = $('.blue_background');
@@ -748,7 +819,8 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
 
 
     $('#go_home_btn').remove();
-    $('br').remove();
+    //$('br').remove();
+    $('#title_page_stuff br').remove();
 
     $('#no_can_do_modal').modal('hide');
     $('#no_instances_modal').modal('hide');
@@ -776,7 +848,7 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
 
     // create airport stuff
 
-    let create_own_airport_div = $("<div id='create_airport_div' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Create Your Own Airport</h2></div>");
+    let create_own_airport_div = $("<div id='create_airport_div' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Create Your Own Airport</h2></div>");
     outside_row.append(create_own_airport_div);
 
     let create_own_airport_div_information = $("<div id='create_own_airport_div_info'></div>");
@@ -786,7 +858,7 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
 
     // create flight stuff
 
-    let create_own_flight_div = $("<div id='create_flight_div' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Create Your Own Flight and Instance</h2></div>");
+    let create_own_flight_div = $("<div id='create_flight_div' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Create Your Own Flight and Instance</h2></div>");
     outside_row.append(create_own_flight_div);
 
     let create_own_flight_div_information = $("<div id='create_own_flight_div_info'></div>");
