@@ -319,59 +319,65 @@ $(document).on('click', '#generate_weather_btn', function(e) {
     $("#weather_div").empty();
     var thisWeather;
 
-    $('#generate_weather_btn').text("Finding Weather...");
-
     weather_airport_text = $("#weather_loc_dropdown").val();
 
-    //$.support.cors = true;
-    //find airport id from name of airport
-    $.ajax({
-        url: root_url+'/airports',
-        type: 'GET',
-        dataType: 'json',
-        xhrFields: { withCredentials: true },
-        success: (response) => {
-            for (let i=0; i<response.length; i++) {
-                let airport_name = response[i].name;
-                let airport_id = response[i].id;
-                let airport_latitude = response[i].latitude;
-                let airport_longitude = response[i].longitude;
+    if (weather_airport_text == null) {
+        //alert("Please fill out all 5 fields and try again");
+        $('#fill_all_fields_modal').modal();
+    } else {
+        $('#generate_weather_btn').text("Finding Weather...");
 
-                if (airport_name == weather_airport_text) {
-                    weather_airport_id = airport_id;
-                    weather_latitude = airport_latitude;
-                    weather_longitude = airport_longitude;
+        //$.support.cors = true;
+        //find airport id from name of airport
+        $.ajax({
+            url: root_url + '/airports',
+            type: 'GET',
+            dataType: 'json',
+            xhrFields: {withCredentials: true},
+            success: (response) => {
+                for (let i = 0; i < response.length; i++) {
+                    let airport_name = response[i].name;
+                    let airport_id = response[i].id;
+                    let airport_latitude = response[i].latitude;
+                    let airport_longitude = response[i].longitude;
+
+                    if (airport_name == weather_airport_text) {
+                        weather_airport_id = airport_id;
+                        weather_latitude = airport_latitude;
+                        weather_longitude = airport_longitude;
+                    }
                 }
+                $.ajax({
+                    url: 'https://api.darksky.net/forecast/5df59b1806b8c925f9502f5a98a80be0/' + weather_latitude + "," + weather_longitude,
+                    type: 'GET',
+                    dataType: 'jsonp',
+                    crossDomain: true,
+                    // xhrFields: {withCredentials: true},
+                    success: (response) => {
+                        dailySummary = response;
+                        dailySummary = response.daily.summary;
+                        weather0 = response.daily.data[0].summary;
+                        //alert(dailySummary);
+                        //alert(weather0);
+                        thisWeather = response;
+                        implementWeather(thisWeather);
+
+
+                    },
+                    error: () => {
+                        console.log('error getting weather');
+                        alert(weather_root_url + weather_latitude + "," + weather_longitude);
+
+                    }
+                });
+                //console.log(response);
+            },
+            error: () => {
+                console.log('error getting airports');
             }
-            $.ajax({
-                url: 'https://api.darksky.net/forecast/5df59b1806b8c925f9502f5a98a80be0/' + weather_latitude + "," + weather_longitude,
-                type: 'GET',
-                dataType: 'jsonp',
-                crossDomain: true,
-               // xhrFields: {withCredentials: true},
-                success: (response) => {
-                    dailySummary = response;
-                    dailySummary = response.daily.summary;
-                    weather0 = response.daily.data[0].summary;
-                    //alert(dailySummary);
-                    //alert(weather0);
-                    thisWeather = response;
-                    implementWeather(thisWeather);
+        });
 
-
-                },
-                error: () => {
-                    console.log('error getting weather');
-                    alert(weather_root_url + weather_latitude + "," + weather_longitude);
-
-                }
-            });
-            //console.log(response);
-        },
-        error: () => {
-            console.log('error getting airports');
-        }
-    });
+    }
 
 
 });
@@ -457,19 +463,13 @@ var dayOfWeek = function(dayNum)
     {
         return "Friday";
     }
-    if (dayNum == 0)
+    if (dayNum == 6)
     {
         return "Saturday";
     }
 }
 
 $(document).on('click', '#find_flights_btn', function(e) {
-    //console.log('clicked generate flights');
-
-    $('#find_flights_btn').text("Finding flights...");
-
-    // var , ;
-    // var ;
 
     departing_leave_airport_text = $("#depart_leav_loc_dropdown").val();
     departing_arrive_airport_text = $("#depart_arriv_loc_dropdown").val();
@@ -479,152 +479,162 @@ $(document).on('click', '#find_flights_btn', function(e) {
     returning_arrive_airport_text = $("#return_arriv_loc_dropdown").val();
     returning_day = $("#returning_datepicker").val();
 
-    var departing_day_year = departing_day.substring(6,10);
-    var departing_day_month = departing_day.substring(0,2);
-    var departing_day_day = departing_day.substring(3,5);
+    if (departing_leave_airport_text == null || departing_arrive_airport_text == null ||  departing_day == '' ||
+        returning_depart_airport_text == null || returning_arrive_airport_text == null || returning_day == "") {
+        //alert("Please fill out all 5 fields and try again");
+        $('#fill_all_fields_modal').modal();
+    } else {
 
-    departing_day_transformed = departing_day_year + '-' + departing_day_month + '-' + departing_day_day;
+        $('#find_flights_btn').text("Finding flights...");
 
-    //console.log(departing_day_transformed);
+        var departing_day_year = departing_day.substring(6, 10);
+        var departing_day_month = departing_day.substring(0, 2);
+        var departing_day_day = departing_day.substring(3, 5);
 
-    var returning_day_year = returning_day.substring(6,10);
-    var returning_day_month = returning_day.substring(0,2);
-    var returning_day_day = returning_day.substring(3,5);
+        departing_day_transformed = departing_day_year + '-' + departing_day_month + '-' + departing_day_day;
 
-    returning_day_transformed = returning_day_year + '-' + returning_day_month + '-' + returning_day_day;
+        //console.log(departing_day_transformed);
 
-    //console.log(returning_day_transformed);
+        var returning_day_year = returning_day.substring(6, 10);
+        var returning_day_month = returning_day.substring(0, 2);
+        var returning_day_day = returning_day.substring(3, 5);
+
+        returning_day_transformed = returning_day_year + '-' + returning_day_month + '-' + returning_day_day;
+
+        //console.log(returning_day_transformed);
 
 
-    // console.log(returning_depart_airport_text);
-    // console.log(returning_arrive_airport_text);
-    // console.log(returning_day);
+        // console.log(returning_depart_airport_text);
+        // console.log(returning_arrive_airport_text);
+        // console.log(returning_day);
 
 
-    // each airport has an id, each flight has a departure_id and arrival_id
-    // need to get id's of airports named, then need to see if there is a flight with the corresponding departure and arrival ids
-    // if yes, go on. if no, pop up no flight modal
-    // moving on - somehow find instance with date and corresponding flight id (but flights don't have an id??)
+        // each airport has an id, each flight has a departure_id and arrival_id
+        // need to get id's of airports named, then need to see if there is a flight with the corresponding departure and arrival ids
+        // if yes, go on. if no, pop up no flight modal
+        // moving on - somehow find instance with date and corresponding flight id (but flights don't have an id??)
 
-    //var
+        //var
 
-    //find airport id from name of airport
-    $.ajax({
-        url: root_url+'/airports',
-        type: 'GET',
-        dataType: 'json',
-        xhrFields: { withCredentials: true },
-        success: (response) => {
-            for (let i=0; i<response.length; i++) {
-                let airport_name = response[i].name;
-                let airport_id = response[i].id;
+        //find airport id from name of airport
+        $.ajax({
+            url: root_url + '/airports',
+            type: 'GET',
+            dataType: 'json',
+            xhrFields: {withCredentials: true},
+            success: (response) => {
+                for (let i = 0; i < response.length; i++) {
+                    let airport_name = response[i].name;
+                    let airport_id = response[i].id;
 
-                if (airport_name == departing_leave_airport_text) {
-                    departing_leave_airport_id = airport_id;
-                    // console.log('found departing leave!!!!');
-                    // console.log(airport_name);
-                    // console.log(departing_leave_airport_id);
+                    if (airport_name == departing_leave_airport_text) {
+                        departing_leave_airport_id = airport_id;
+                        // console.log('found departing leave!!!!');
+                        // console.log(airport_name);
+                        // console.log(departing_leave_airport_id);
+                    }
+
+                    if (airport_name == departing_arrive_airport_text) {
+                        departing_arrive_airport_id = airport_id;
+                        // console.log('found departing arrive!!!!');
+                        // console.log(airport_name);
+                        // console.log(departing_arrive_airport_id);
+                    }
+
+                    if (airport_name == returning_depart_airport_text) {
+                        returning_depart_airport_id = airport_id;
+                        // console.log('found returning depart!!!!');
+                        // console.log(airport_name);
+                        // console.log(returning_depart_airport_id);
+                    }
+
+                    if (airport_name == returning_arrive_airport_text) {
+                        returning_arrive_airport_id = airport_id;
+                        // console.log('found returning arrive!!!!');
+                        // console.log(airport_name);
+                        // console.log(returning_arrive_airport_id);
+                    }
                 }
-
-                if (airport_name == departing_arrive_airport_text) {
-                    departing_arrive_airport_id = airport_id;
-                    // console.log('found departing arrive!!!!');
-                    // console.log(airport_name);
-                    // console.log(departing_arrive_airport_id);
-                }
-
-                if (airport_name == returning_depart_airport_text) {
-                    returning_depart_airport_id = airport_id;
-                    // console.log('found returning depart!!!!');
-                    // console.log(airport_name);
-                    // console.log(returning_depart_airport_id);
-                }
-
-                if (airport_name == returning_arrive_airport_text) {
-                    returning_arrive_airport_id = airport_id;
-                    // console.log('found returning arrive!!!!');
-                    // console.log(airport_name);
-                    // console.log(returning_arrive_airport_id);
-                }
+                //console.log(response);
+            },
+            error: () => {
+                console.log('error getting airports');
             }
-            //console.log(response);
-        },
-        error: () => {
-            console.log('error getting airports');
-        }
-    });
+        });
 
 
-    let found_departure = 0, found_return = 0;
+        let found_departure = 0, found_return = 0;
 
-    found_departure_flight_id = 0;
-    found_return_flight_id = 0;
+        found_departure_flight_id = 0;
+        found_return_flight_id = 0;
 
-    //find flight from above ids for both departure and return
-    $.ajax({
-        url: root_url+'/flights',
-        type: 'GET',
-        dataType: 'json',
-        xhrFields: { withCredentials: true },
-        success: (response) => {
-            for (let i=0; i<response.length; i++) {
-                let arrival_id = response[i].arrival_id;
-                let departure_id = response[i].departure_id;
+        //find flight from above ids for both departure and return
+        $.ajax({
+            url: root_url + '/flights',
+            type: 'GET',
+            dataType: 'json',
+            xhrFields: {withCredentials: true},
+            success: (response) => {
+                for (let i = 0; i < response.length; i++) {
+                    let arrival_id = response[i].arrival_id;
+                    let departure_id = response[i].departure_id;
 
 
-                if(departure_id == departing_leave_airport_id && arrival_id == departing_arrive_airport_id) {
-                    console.log('found flight for departure!!!!');
-                    console.log(response[i]);
-                    found_departure_flight_id = response[i].id;
-                    depart_departing_time = response[i].departs_at;
-                    depart_arriving_time = response[i].arrives_at;
-                    depart_airline_id = response[i].airline_id;
-                    found_departure = 1;
+                    if (departure_id == departing_leave_airport_id && arrival_id == departing_arrive_airport_id) {
+                        console.log('found flight for departure!!!!');
+                        console.log(response[i]);
+                        found_departure_flight_id = response[i].id;
+                        depart_departing_time = response[i].departs_at;
+                        depart_arriving_time = response[i].arrives_at;
+                        depart_airline_id = response[i].airline_id;
+                        found_departure = 1;
+                    }
+
+                    if (departure_id == returning_depart_airport_id && arrival_id == returning_arrive_airport_id) {
+                        console.log('found flight for return!!!!');
+                        console.log(response[i]);
+                        found_return_flight_id = response[i].id;
+                        return_departing_time = response[i].departs_at;
+                        return_arriving_time = response[i].arrives_at;
+                        return_airline_id = response[i].airline_id;
+                        found_return = 1;
+                    }
+
+                    if (i == (response.length - 1) && found_departure == 0) {
+                        console.log('could not find flight for departure...');
+                    }
+
+                    if (i == (response.length - 1) && found_return == 0) {
+                        console.log('could not find flight for return...');
+                    }
+
+                    if (i == (response.length - 1) && (found_departure == 0 || found_return == 0)) {
+                        console.log('did not find flight meeting requirements...');
+
+                        $('#find_flights_btn').text("Find Flights");
+
+                        //pop up a modal or something
+                        $('#no_can_do_modal').modal();
+
+
+                    } else if (i == (response.length - 1)) {
+                        console.log('found two flights!, now finding instances');
+                        depart_departing_time_transformed = depart_departing_time.substring(11, 16);
+                        depart_arriving_time_transformed = depart_arriving_time.substring(11, 16);
+                        return_departing_time_transformed = return_departing_time.substring(11, 16);
+                        return_arriving_time_transformed = return_arriving_time.substring(11, 16);
+                        find_instances();
+                    }
                 }
 
-                if(departure_id == returning_depart_airport_id && arrival_id == returning_arrive_airport_id) {
-                    console.log('found flight for return!!!!');
-                    console.log(response[i]);
-                    found_return_flight_id = response[i].id;
-                    return_departing_time = response[i].departs_at;
-                    return_arriving_time = response[i].arrives_at;
-                    return_airline_id = response[i].airline_id;
-                    found_return = 1;
-                }
 
-                if(i==(response.length-1) && found_departure == 0) {
-                    console.log('could not find flight for departure...');
-                }
-
-                if(i==(response.length-1) && found_return == 0) {
-                    console.log('could not find flight for return...');
-                }
-
-                if (i==(response.length-1) && (found_departure == 0 || found_return == 0)) {
-                    console.log('did not find flight meeting requirements...');
-
-                    $('#find_flights_btn').text("Find Flights");
-
-                    //pop up a modal or something
-                    $('#no_can_do_modal').modal();
-
-
-                } else if (i==(response.length-1)) {
-                    console.log('found two flights!, now finding instances');
-                    depart_departing_time_transformed = depart_departing_time.substring(11,16);
-                    depart_arriving_time_transformed = depart_arriving_time.substring(11,16);
-                    return_departing_time_transformed = return_departing_time.substring(11,16);
-                    return_arriving_time_transformed = return_arriving_time.substring(11,16);
-                    find_instances();
-                }
+            },
+            error: () => {
+                console.log('error getting flights');
             }
+        });
 
-
-        },
-        error: () => {
-            console.log('error getting flights');
-        }
-    });
+    }
 
 
 });
@@ -934,8 +944,6 @@ var put_return_ticket_in = function() {
 $(document).on('click', '#go_home_btn', function(e) {
     console.log('we going home');
 
-    //build_interface();
-
     go_home();
 
 });
@@ -961,8 +969,13 @@ var go_home = function() {
 
 
 
+$(document).on('click', '#not_satisfied_btn', function() {
 
-$(document).on('click', '#not_satisfied_btn', function(e) {
+    generate_not_satisfied_container_stuff();
+
+});
+
+var generate_not_satisfied_container_stuff = function() {
     let body = $('.reg-body');
     let other_total_body = $('.blue_background');
 
@@ -1050,11 +1063,6 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
     }
 
 
-   // create_own_airport_div_information.append($("<p>Airport City URL</p>"));
-
-    //let coa_city_url_input = $("<input id='coa_city_url_input' value=''</input>");
-    //create_own_airport_div_information.append(coa_city_url_input);
-
     let create_airport_btn = $("<br><div id='create_airport'><button class='bottom-column btn' id='create_airport_btn'>Create Airport</button></div><br>");
     create_own_airport_div_information.append(create_airport_btn);
 
@@ -1066,7 +1074,7 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
     let create_own_flight_div_information = $("<div id='create_own_flight_div_info'></div>");
     create_own_flight_div.append(create_own_flight_div_information);
 
-   // create_own_flight_div_information.append($("<p>do some stuff</p>"));
+    // create_own_flight_div_information.append($("<p>do some stuff</p>"));
 
     create_own_flight_div_information.append($("<p>Departing Airport: </p>"));
 
@@ -1092,17 +1100,17 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
     create_own_flight_div_information.append(arriving_time_dropdown);
 
     let times_array = ["00:00", "00:15", "00:30", "00:45", "01:00", "01:15", "01:30", "01:45",
-                        "02:00", "02:15", "02:30", "02:45", "03:00", "03:15", "03:30", "03:45",
-                        "04:00", "04:15", "04:30", "04:45", "05:00", "05:15", "05:30", "05:45",
-                        "06:00", "06:15", "06:30", "06:45", "07:00", "07:15", "07:30", "07:45",
-                        "08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "09:45",
-                        "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45",
-                        "12:00", "12:15", "12:30", "12:45", "13:00", "13:15", "13:30", "13:45",
-                        "14:00", "14:15", "14:30", "14:45", "15:00", "15:15", "15:30", "15:45",
-                        "16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45",
-                        "18:00", "18:15", "18:30", "18:45", "19:00", "19:15", "19:30", "19:45",
-                        "20:00", "20:15", "20:30", "20:45", "21:00", "21:15", "21:30", "21:45",
-                        "22:00", "22:15", "22:30", "22:45", "23:00", "23:15", "23:30", "23:45"]
+        "02:00", "02:15", "02:30", "02:45", "03:00", "03:15", "03:30", "03:45",
+        "04:00", "04:15", "04:30", "04:45", "05:00", "05:15", "05:30", "05:45",
+        "06:00", "06:15", "06:30", "06:45", "07:00", "07:15", "07:30", "07:45",
+        "08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "09:45",
+        "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45",
+        "12:00", "12:15", "12:30", "12:45", "13:00", "13:15", "13:30", "13:45",
+        "14:00", "14:15", "14:30", "14:45", "15:00", "15:15", "15:30", "15:45",
+        "16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45",
+        "18:00", "18:15", "18:30", "18:45", "19:00", "19:15", "19:30", "19:45",
+        "20:00", "20:15", "20:30", "20:45", "21:00", "21:15", "21:30", "21:45",
+        "22:00", "22:15", "22:30", "22:45", "23:00", "23:15", "23:30", "23:45"]
 
     for(let i=0; i<times_array.length; i++) {
         departing_time_dropdown.append($('<option>'+times_array[i]+'</option>'));
@@ -1114,31 +1122,15 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
     let flight_number_input = $("<input class='form-control' id='flight_number_input' placeholder='e.g. AA 3001'></input><br>");
     create_own_flight_div_information.append(flight_number_input);
 
-    let create_flight_btn = $("<br><div id='create_flight'><button class='bottom-column btn' id='create_flight_btn'>Create Flight</button></div><br>");
-    create_own_flight_div_information.append(create_flight_btn);
-
-    let create_own_instance_div_information = $("<div id='create_own_instance_div_info'></div>");
-    create_own_flight_div.append(create_own_instance_div_information);
-
-    create_own_instance_div_information.append($("<p>Flight id: </p>"));
-
-    let flight_id_input = $("<input class='form-control' id='flight_id_input' placeholder='e.g. 65123'></input><br>");
-    create_own_instance_div_information.append(flight_id_input);
-
-    create_own_instance_div_information.append($("<p>Day of Departure: </p>"));
+    create_own_flight_div_information.append($("<p>Day of Departure: </p>"));
 
     let instance_departing_day_text = $("<input type='text' class='form-control' id='instance_departing_datepicker'><br>")
-    create_own_instance_div_information.append(instance_departing_day_text);
+    create_own_flight_div_information.append(instance_departing_day_text);
     instance_departing_day_text.datepicker();
 
- //   create_own_instance_div_information.append($("<p>Day of Arrival: </p>"));
+    let create_flight_btn = $("<br><div id='create_flight'><button class='bottom-column btn' id='create_flight_btn'>Create Flight and Instance</button></div><br>");
+    create_own_flight_div_information.append(create_flight_btn);
 
-    let instance_arrival_day_text = $("<input type='text' class='form-control' id='instance_arrival_datepicker'><br>")
-  //  create_own_instance_div_information.append(instance_arrival_day_text);
-  //  instance_arrival_day_text.datepicker();
-
-    let create_instance_btn = $("<br><div id='create_instance'><button class='bottom-column btn' id='create_instance_btn'>Create Instance</button></div><br>");
-    create_own_instance_div_information.append(create_instance_btn);
 
     $.ajax({
         url: root_url+'/airports',
@@ -1158,73 +1150,9 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
         }
     });
 
-    //let create_own_instance_div = $("<div id='create_instance_div' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Create Your Own Flight and Instance</h2></div>");
-    //outside_row.append(create_own_flight_div);
+}
 
-
-
-    //let departing_airport_dropdown = $("<select class='form-control' id='departing_airport_dropdown'><option value='' disabled selected>select your option</option></select><br>");
-    //create_own_flight_div_information.append(departing_airport_dropdown);
-
-
-});
-
-var create_instance_flight_id, create_instance_departure_day, create_instance_arrival_day, create_flight_number;
-
-$(document).on('click', '#create_instance_btn', function(e) {
-    create_instance_flight_id = $('#flight_id_input').val();
-    create_instance_departure_day = $('#instance_departing_datepicker').val();
-    //create_instance_arrival_day = $('#instance_arrival_datepicker').val();
-
-
-  //  alert(create_instance_arrival_day);
-    alert(create_instance_departure_day);
-  //  alert(create_instance_flight_id);
-
-
-    var departing_instance_day_year = create_instance_departure_day.substring(6,10);
-    var departing_instance_day_month = create_instance_departure_day.substring(0,2);
-    var departing_instance_day_day = create_instance_departure_day.substring(3,5);
-    var instance_day_transformed;
-
-    instance_day_transformed = departing_instance_day_year + '-' + departing_instance_day_month + '-' + departing_instance_day_day;
-
-
-    if (create_instance_flight_id == "" || create_instance_departure_day == "")/* || create_instance_arrival_day == "")*/
-    {
-        alert("Please fill out all 2 fields and try again");
-    }
-    else
-    {
-        alert("trying");
-        $.ajax({
-            url: root_url + '/instances',
-            type: 'POST',
-            dataType: 'json',
-            xhrFields: {withCredentials: true},
-            data: {
-                "instance": {
-                    "flight_id": ''+create_instance_flight_id+'',
-                    "date": ''+instance_day_transformed+''
-                }
-            },
-            success: (response) => {
-                alert("worked");
-            },
-            error: (ts) => {
-                alert("failed");
-                alert(create_instance_flight_id);
-                alert(create_instance_departure_day);
-                //alert('not logged in');
-                // alert(ts.responseText);
-                //alert("error");
-                //alert(create_airport_name);
-                //alert(create_airport_code);
-            }
-        });
-    }
-});
-
+var create_instance_departure_day, create_flight_number;
 
 
 var create_airport_name, create_airport_code, create_airport_latitude, create_airport_longitude,
@@ -1239,17 +1167,14 @@ $(document).on('click', '#create_airport_btn', function(e) {
     create_airport_longitude = $('#coa_longitude_input').val();
     create_airport_city = $('#coa_city_input').val();
     create_airport_state = $('#coa_state_input').val();
-  //  create_airport_city_url = $('#coa_city_url_input').val();
-
-    //alert(create_airport_name);
-    //alert(create_airport_code);
 
 
 
     if (create_airport_code == "" || create_airport_name == "" || create_airport_latitude == "" || create_airport_longitude == ""
-        || create_airport_city == "" || create_airport_state == null/* || create_airport_city_url == ""*/)
+        || create_airport_city == "" || create_airport_state == null)
     {
-        alert("Please fill out all 7 fields and try again");
+        //alert("Please fill out all 7 fields and try again");
+        $('#fill_all_fields_modal').modal();
     }
 
 
@@ -1272,19 +1197,21 @@ $(document).on('click', '#create_airport_btn', function(e) {
                 }
             },
             success: (response) => {
-                alert("worked");
+                //alert("worked");
+                $('#create_airport_success_modal').modal();
+                generate_not_satisfied_container_stuff();
+                update_weather_loc_dropdown();
             },
             error: (ts) => {
-                //alert('not logged in');
-               // alert(ts.responseText);
-                //alert("error");
-                //alert(create_airport_name);
-                //alert(create_airport_code);
+                console.log('error with creating new airport');
             }
         });
     }
 
 });
+
+var departing_airport_id, arriving_airport_id;
+var new_flight_id;
 
 $(document).on('click', '#create_flight_btn', function(e) {
 
@@ -1294,93 +1221,151 @@ $(document).on('click', '#create_flight_btn', function(e) {
     create_flight_departing_time = $('#departing_time_dropdown').val();
     create_flight_arriving_time = $('#arriving_time_dropdown').val();
     create_flight_number = $('#flight_number_input').val();
-    //  create_airport_city_url = $('#coa_city_url_input').val();
 
-    //alert(create_airport_name);
-    //alert(create_airport_code);
+    create_instance_departure_day = $('#instance_departing_datepicker').val();
 
-    var departing_airport_id, arriving_airport_id;
-    var new_flight_id;
 
-    if (create_flight_departing == null || create_flight_arriving == null || create_flight_departing_time == null || create_flight_arriving_time == null || create_flight_number == "")
-    {
-        alert("Please fill out all 5 fields and try again");
-    }
-    else
-    {
+    if (create_flight_departing == null || create_flight_arriving == null || create_flight_departing_time == null || create_flight_arriving_time == null || create_flight_number == "" || create_instance_departure_day == "") {
+        //alert("Please fill out all 5 fields and try again");
+        $('#fill_all_fields_modal').modal();
+    } else {
         $.ajax({
+            url: root_url + '/airports?filter[name]=' + create_flight_departing,
+            type: 'GET',
+            dataType: 'json',
+            xhrFields: {withCredentials: true},
+            success: (response) => {
+                for (let i = 0; i < response.length; i++) {
+                    let airport_id = response[i].id;
+
+                    departing_airport_id = airport_id;
+
+                }
+            },error: () => {
+                console.log('error getting create flight departing id');
+            }
+        });
+
+        $.ajax({
+            url: root_url + '/airports?filter[name]=' + create_flight_arriving,
+            type: 'GET',
+            dataType: 'json',
+            xhrFields: {withCredentials: true},
+            success: (response) => {
+                for (let i = 0; i < response.length; i++) {
+                    //let airport_name = response[i].name;
+                    let airport_id = response[i].id;
+
+                    arriving_airport_id = airport_id;
+
+                }
+
+                create_new_flight();
+            }, error: (ts) => {
+                console.log('error getting create flight arriving id');
+            }
+        });
+
+
+
+    }
+});
+
+var create_new_flight = function() {
+    $.ajax({
+        url: root_url + '/flights',
+        type: 'POST',
+        dataType: 'json',
+        xhrFields: {withCredentials: true},
+        data: {
+            "flight": {
+                "departs_at": '' + create_flight_departing_time + '',
+                "arrives_at": '' + create_flight_arriving_time + '',
+                "number": "" + create_flight_number + "",
+                "departure_id": "" + departing_airport_id + "",
+                "arrival_id": "" + arriving_airport_id + "",
+                "airline_id": "59146"
+            }
+        }, success: (response) => {
+            // alert("worked");
+            // alert(create_flight_departing_time);
+            // alert(create_flight_arriving_time);
+            // alert(departing_airport_id);
+            // alert(arriving_airport_id);
+            // alert(create_flight_number);
+            console.log('HERE IT ISSS');
+            console.log(response);
+
+            new_flight_id = response.id;
+            console.log(new_flight_id);
+
+            make_new_instance();
+
+        }, error: () => {
+            console.log('error making flight');
+            console.log(departing_airport_id);
+            console.log(arriving_airport_id);
+        }
+
+    });
+};
+
+var make_new_instance = function() {
+
+    var departing_instance_day_year = create_instance_departure_day.substring(6,10);
+    var departing_instance_day_month = create_instance_departure_day.substring(0,2);
+    var departing_instance_day_day = create_instance_departure_day.substring(3,5);
+    var instance_day_transformed;
+
+    instance_day_transformed = departing_instance_day_year + '-' + departing_instance_day_month + '-' + departing_instance_day_day;
+
+
+    alert("trying");
+    $.ajax({
+        url: root_url + '/instances',
+        type: 'POST',
+        dataType: 'json',
+        xhrFields: {withCredentials: true},
+        data: {
+            "instance": {
+                "flight_id": ''+new_flight_id+'',
+                "date": ''+instance_day_transformed+''
+            }
+        },
+        success: (response) => {
+            //alert("worked");
+            $('#create_flight_instance_success_modal').modal();
+            generate_not_satisfied_container_stuff();
+        },
+        error: (ts) => {
+            // alert("failed");
+            // alert(create_instance_flight_id);
+            // alert(create_instance_departure_day);
+            console.log('error in creating instance of flight');
+        }
+    });
+}
+
+
+var update_weather_loc_dropdown = function() {
+
+    $('#weather_loc_dropdown').remove();
+
+    let weather_information = $('#weather_information');
+
+    let weather_location_dropdown = $("<select class='form-control' id='weather_loc_dropdown'><option value='' disabled selected>select your option</option></select>");
+    weather_information.append(weather_location_dropdown);
+
+    $.ajax({
         url: root_url+'/airports',
         type: 'GET',
         dataType: 'json',
         xhrFields: { withCredentials: true },
         success: (response) => {
             for (let i=0; i<response.length; i++) {
-                let airport_name = response[i].name;
-                let airport_id = response[i].id;
-                // alert("trying");
-                if (airport_name == create_flight_departing) {
-                    departing_airport_id = airport_id;
-                }
-
-                if (airport_name == create_flight_arriving) {
-                    arriving_airport_id = airport_id;
-
-                }
+                //alert('got airlines');
+                weather_location_dropdown.append($('<option>'+response[i].name+'</option>'));
             }
-
-            $.ajax({
-                url: root_url + '/flights',
-                type: 'POST',
-                dataType: 'json',
-                xhrFields: {withCredentials: true},
-                data: {
-                    "flight": {
-                        "departs_at": ''+create_flight_departing_time+'',
-                        "arrives_at": ''+create_flight_arriving_time+'',
-                        "departure_id": ""+departing_airport_id+"",
-                        "arrival_id": ""+arriving_airport_id+"",
-                        "number": ""+create_flight_number+""
-                    }
-                },
-                success: (response) => {
-                    alert("worked");
-                    alert(create_flight_departing_time);
-                    alert(create_flight_arriving_time);
-                    alert(departing_airport_id);
-                    alert(arriving_airport_id);
-                    alert(create_flight_number);
-
-                    $.ajax({
-                            url: root_url+'/flights',
-                            type: 'GET',
-                            dataType: 'json',
-                            xhrFields: { withCredentials: true },
-                            success: (response) => {
-                                for (let i=0; i<response.length; i++) {
-                                    let get_departing_airport_id = response[i].departure_id;
-                                    let get_arriving_airport_id = response[i].arrival_id;
-                                    let get_this_flight_id = response[i].id;
-                                    // alert("trying");
-                                    if (get_departing_airport_id == departing_airport_id && get_arriving_airport_id == arriving_airport_id)
-                                        new_flight_id = get_this_flight_id;
-                                }
-                                alert("Your new flight id is " + new_flight_id);
-                            },
-                            //console.log(response)
-                        error: () => {
-                            console.log('error getting airports');
-                        }
-                        });
-                },
-                error: (ts) => {
-                    //alert('not logged in');
-                    // alert(ts.responseText);
-                    //alert("error");
-                    //alert(create_airport_name);
-                    //alert(create_airport_code);
-                }
-            });
-
             //console.log(response);
         },
         error: () => {
@@ -1388,12 +1373,8 @@ $(document).on('click', '#create_flight_btn', function(e) {
         }
     });
 
+}
 
-
-
-    }
-
-});
 
 
 
