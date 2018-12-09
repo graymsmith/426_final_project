@@ -3,6 +3,17 @@ var weather_root_url = "https://api.darksky.net/forecast/5df59b1806b8c925f9502f5
 
 $(document).ready(() => {
 
+
+
+    $(window).resize(function() {
+       // alert("tried");
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+        //alert("closer");
+        $('#weather_div').css({'height': windowHeight-220 + 'px'});
+        //alert("resided");
+    });
+
     var login_btn =  $('#login_btn');
 
     // Execute a function when the user releases a key on the keyboard
@@ -147,6 +158,16 @@ var generate_weather_container_stuff = function() {
     let generate_weather_btn = $("<br><div id='generate_weather'><button class='bottom-column btn' id='generate_weather_btn'>Find Weather</button></div>");
     weather_container_bottom.append(generate_weather_btn);
 
+    let weekly_weather_div = $("<div class = 'form-control' id='weather_div'></div>");
+
+
+    weather_container_bottom.append(weekly_weather_div);
+
+    var windowWidth = $(window).width();
+    var windowHeight = $(window).height();
+    //alert("closer");
+    $('#weather_div').css({'height': windowHeight-220 + 'px'});
+
     //Backend to get airports
 
     $.ajax({
@@ -289,17 +310,18 @@ var weather_airport_text, weather_airport_id, weather_latitude, weather_longitud
 
 var currentDay, dailySummary, weather0, weather1, weather2, weather3, weather4, weather5, weather6, weather7;
 
+var weatherData;
+
 
 
 $(document).on('click', '#generate_weather_btn', function(e) {
     //console.log('clicked generate flights');
+    $("#weather_div").empty();
+    var thisWeather;
 
-    $('#generate_weather_btn').text("Finding weather...");
+    $('#generate_weather_btn').text("Finding Weather...");
 
     weather_airport_text = $("#weather_loc_dropdown").val();
-
-    var today = new Date();
-    currentDay = today.getDay();
 
     //$.support.cors = true;
     //find airport id from name of airport
@@ -319,13 +341,8 @@ $(document).on('click', '#generate_weather_btn', function(e) {
                     weather_airport_id = airport_id;
                     weather_latitude = airport_latitude;
                     weather_longitude = airport_longitude;
-                    // console.log('found departing leave!!!!');
-                    // console.log(airport_name);
-                    // console.log(departing_leave_airport_id);
-                    alert(weather_latitude);
                 }
             }
-
             $.ajax({
                 url: 'https://api.darksky.net/forecast/5df59b1806b8c925f9502f5a98a80be0/' + weather_latitude + "," + weather_longitude,
                 type: 'GET',
@@ -335,7 +352,13 @@ $(document).on('click', '#generate_weather_btn', function(e) {
                 success: (response) => {
                     dailySummary = response;
                     dailySummary = response.daily.summary;
-                    alert(dailySummary);
+                    weather0 = response.daily.data[0].summary;
+                    //alert(dailySummary);
+                    //alert(weather0);
+                    thisWeather = response;
+                    implementWeather(thisWeather);
+
+
                 },
                 error: () => {
                     console.log('error getting weather');
@@ -351,8 +374,94 @@ $(document).on('click', '#generate_weather_btn', function(e) {
     });
 
 
-
 });
+
+var implementWeather = function(thisWeather)
+{
+
+    var today = new Date();
+    currentDay = today.getDay();
+
+    var dateCounter = currentDay;
+    var dayOfWeekInt = 0;
+    var dayOfWeekString = "";
+
+    var thisWeatherSummary = thisWeather.daily.summary;
+
+    thisWeatherSummaryDiv = $("<p>Weekly Summary:  "+thisWeatherSummary+"</p>");
+    thisWeatherSummaryDiv.addClass('weatherSummary');
+    $("#weather_div").append(thisWeatherSummaryDiv);
+
+    while(dateCounter < currentDay + 7)
+    {
+        if(dateCounter > 6)
+        {
+            dayOfWeekInt = dateCounter % 7;
+        }
+        else
+        {
+            dayOfWeekInt = dateCounter;
+        }
+
+        dayOfWeekString = dayOfWeek(dayOfWeekInt);
+        if(dateCounter == currentDay)
+        {
+            dayOfWeekString = "Today";
+        }
+        else if(dateCounter == currentDay + 1)
+        {
+            dayOfWeekString = "Tomorrow";
+        }
+        //alert(dayOfWeekString);
+
+        var dailySummary = thisWeather.daily.data[dayOfWeekInt].summary;
+        thisTodaySummaryDiv = $("<p>"+dayOfWeekString+" Summary:  "+dailySummary+"</p>");
+        if(dateCounter % 2 == 0)
+            thisTodaySummaryDiv.addClass('weatherSummaryEven');
+        else
+            thisTodaySummaryDiv.addClass('weatherSummaryOdd');
+        $("#weather_div").append(thisTodaySummaryDiv);
+
+        //alert(dayOfWeekString);
+
+
+
+        dateCounter++;
+    }
+    $('#generate_weather_btn').text("Find Weather");
+}
+
+var dayOfWeek = function(dayNum)
+{
+    if (dayNum == 0)
+    {
+        return "Sunday";
+    }
+    if (dayNum == 1)
+    {
+        return "Monday";
+    }
+    if (dayNum == 2)
+    {
+        return "Tuesday";
+    }
+    if (dayNum == 3)
+    {
+        return "Wednesday";
+    }
+    if (dayNum == 4)
+    {
+        return "Thursday";
+    }
+    if (dayNum == 5)
+    {
+        return "Friday";
+    }
+    if (dayNum == 0)
+    {
+        return "Saturday";
+    }
+}
 
 $(document).on('click', '#find_flights_btn', function(e) {
     //console.log('clicked generate flights');
@@ -957,7 +1066,78 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
     let create_own_flight_div_information = $("<div id='create_own_flight_div_info'></div>");
     create_own_flight_div.append(create_own_flight_div_information);
 
-    create_own_flight_div_information.append($("<p>do some stuff</p>"));
+   // create_own_flight_div_information.append($("<p>do some stuff</p>"));
+
+    create_own_flight_div_information.append($("<p>Departing Airport: </p>"));
+
+    let departing_airport_dropdown = $("<select class='form-control' id='departing_airport_dropdown'><option value='' disabled selected>select your option</option></select><br>");
+    create_own_flight_div_information.append(departing_airport_dropdown);
+
+    create_own_flight_div_information.append($("<p>Arriving Airport: </p>"));
+
+    // let cof_departing_airport_input = $("<input class='form-control' id='cof_departing_airport_input' placeholder='e.g. Raleigh Durham International'></input><br>");
+    // create_own_flight_div_information.append(cof_departing_airport_input);
+
+    let arriving_airport_dropdown = $("<select class='form-control' id='arriving_airport_dropdown'><option value='' disabled selected>select your option</option></select><br>");
+    create_own_flight_div_information.append(arriving_airport_dropdown);
+
+    create_own_flight_div_information.append($("<p>Departing Time: </p>"));
+
+    let departing_time_dropdown = $("<select class='form-control' id='departing_time_dropdown'><option value='' disabled selected>select your option</option></select><br>");
+    create_own_flight_div_information.append(departing_time_dropdown);
+
+    create_own_flight_div_information.append($("<p>Arriving Time: </p>"));
+
+    let arriving_time_dropdown = $("<select class='form-control' id='arriving_time_dropdown'><option value='' disabled selected>select your option</option></select><br>");
+    create_own_flight_div_information.append(arriving_time_dropdown);
+
+    let times_array = ["00:00", "00:15", "00:30", "00:45", "01:00", "01:15,", "01:30", "01:45",
+                        "02:00", "02:15", "02:30", "02:45", "03:00", "03:15", "03:30", "03:45",
+                        "04:00", "04:15", "04:30", "04:45", "05:00", "05:15", "05:30", "05:45",
+                        "06:00", "06:15", "06:30", "06:45", "07:00", "07:15,", "07:30", "07:45",
+                        "08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "09:45",
+                        "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45",
+                        "12:00", "12:15", "12:30", "12:45", "13:00", "13:15", "13:30", "13:45",
+                        "14:00", "14:15", "14:30", "14:45", "15:00", "15:15", "15:30", "15:45",
+                        "16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45",
+                        "18:00", "18:15", "18:30", "18:45", "19:00", "19:15", "19:30", "19:45",
+                        "20:00", "20:15", "20:30", "20:45", "21:00", "21:15", "21:30", "21:45",
+                        "22:00", "22:15", "22:30", "22:45", "23:00", "23:15", "23:30", "23:45"]
+
+    for(let i=0; i<times_array.length; i++) {
+        departing_time_dropdown.append($('<option>'+times_array[i]+'</option>'));
+        arriving_time_dropdown.append($('<option>'+times_array[i]+'</option>'));
+    }
+
+    create_own_flight_div_information.append($("<p>Flight Number: </p>"));
+
+    let flight_number_input = $("<input class='form-control' id='flight_number_input' placeholder='e.g. AA 3001'></input><br>");
+    create_own_flight_div_information.append(flight_number_input);
+
+    let create_flight_btn = $("<br><div id='create_flight'><button class='bottom-column btn' id='create_flight_btn'>Create Flight</button></div><br>");
+    create_own_flight_div_information.append(create_flight_btn);
+
+    $.ajax({
+        url: root_url+'/airports',
+        type: 'GET',
+        dataType: 'json',
+        xhrFields: { withCredentials: true },
+        success: (response) => {
+            for (let i=0; i<response.length; i++) {
+                //alert('got airlines');
+                departing_airport_dropdown.append($('<option>'+response[i].name+'</option>'));
+                arriving_airport_dropdown.append($('<option>'+response[i].name+'</option>'));
+            }
+            //console.log(response);
+        },
+        error: () => {
+            console.log('error getting airports');
+        }
+    });
+
+
+
+
 
 });
 
@@ -978,8 +1158,10 @@ $(document).on('click', '#create_airport_btn', function(e) {
     //alert(create_airport_name);
     //alert(create_airport_code);
 
+
+
     if (create_airport_code == "" || create_airport_name == "" || create_airport_latitude == "" || create_airport_longitude == ""
-        || create_airport_city == "" || create_airport_state == ""/* || create_airport_city_url == ""*/)
+        || create_airport_city == "" || create_airport_state == null/* || create_airport_city_url == ""*/)
     {
         alert("Please fill out all 7 fields and try again");
     }
