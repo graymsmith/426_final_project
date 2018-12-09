@@ -262,11 +262,16 @@ h2.title {
 }
 
 #create_own_airport_div_info {
-    height: 489px;
+    /*height: 489px;*/
     overflow: auto;
 }
 
 #create_own_flight_div_info {
-    height: 455px;
+    /*height: 455px;*/
+    overflow: auto;
+    /*border-radius: 4px;*/
+}
+
+#create_flight_div, #create_airport_div {
     overflow: auto;
 }
