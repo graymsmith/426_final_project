@@ -59,6 +59,14 @@ h2.title {
     color: black;
 }
 
+#weather_loc_dropdown {
+    background-color: #ebebe0;
+    border-color: #ebebe0;
+    /*background-color: #bfd9d9;*/
+    /*border-color: #bfd9d9;*/
+    color: black;
+}
+
 .colored_text {
     color: gray;
 }
@@ -77,6 +85,27 @@ h2.title {
     color: whitesmoke;
 }
 
+#create_airport_btn {
+    background-color: #0073e6;
+    border-color: #0073e6;
+    color: whitesmoke;
+    margin-top: 10px;
+}
+
+#create_flight_btn {
+    background-color: #0073e6;
+    border-color: #0073e6;
+    color: whitesmoke;
+    margin-top: 10px;
+}
+
+#create_instance_btn {
+    background-color: #0073e6;
+    border-color: #0073e6;
+    color: whitesmoke;
+    margin-top: 10px;
+}
+
 #ticket_submit_btn {
     background-color: #0073e6;
     border-color: #0073e6;
@@ -90,7 +119,14 @@ h2.title {
     padding: 10px;
 }
 
-#create_own_airport_div_info, #create_own_flight_div_info {
+#weather_information {
+    background-color: #264040;
+    color: whitesmoke;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#create_own_airport_div_info, #create_own_flight_div_info, #create_own_instance_div_info {
     background-color: #663d00;
     color: whitesmoke;
     border-radius: 4px;
@@ -105,6 +141,11 @@ h2.title {
 }
 
 #title_page_stuff {
+    background-color: lightgray;
+    border-radius: 0px;
+}
+
+#weather_page_stuff {
     background-color: lightgray;
     border-radius: 0px;
 }
@@ -128,7 +169,17 @@ h2.title {
     height: 63px;
 }
 
+#generate_weather {
+    color: darkslategrey;
+    height: 63px;
+}
+
 #find_flights_btn {
+    background-color: lightgray;
+    color: darkslategray;
+}
+
+#generate_weather_btn {
     background-color: lightgray;
     color: darkslategray;
 }
@@ -179,3 +230,52 @@ h2.title {
     border-top-right-radius: 0;
 }
 
+#coa_airport_input, #coa_code_input, #coa_latitude_input, #coa_longitude_input, #coa_city_input, #coa_state_input, #coa_city_url_input {
+    color: black
+}
+
+#weather_div {
+    background-color: #1d3030;
+    border-color: #1d3030;
+    overflow:auto;
+}
+
+.weatherSummaryEven {
+    color: white;
+    background-color: darkcyan;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.weatherSummaryOdd {
+    color: white;
+    background-color: #12273b;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.weatherSummary {
+    color: white;
+    background-color: #584e4e;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+#create_own_airport_div_info {
+    /*height: 489px;*/
+    overflow: auto;
+}
+
+#create_own_flight_div_info {
+    /*height: 455px;*/
+    overflow: auto;
+    /*border-radius: 4px;*/
+}
+
+#create_flight_div, #create_airport_div {
+    overflow: auto;
+}
+
+#bottom_stuff, #departing, #returning {
+    overflow: auto;
+}
