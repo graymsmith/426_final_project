@@ -1426,7 +1426,7 @@ var make_new_instance = function() {
     instance_day_transformed = departing_instance_day_year + '-' + departing_instance_day_month + '-' + departing_instance_day_day;
 
 
-    alert("trying");
+    //alert("trying");
     $.ajax({
         url: root_url + '/instances',
         type: 'POST',
