@@ -949,6 +949,11 @@ $(document).on('click', '#go_home_btn', function(e) {
 });
 
 var go_home = function() {
+    let outside_container_title = $('#title_page_stuff');
+
+    let page_description = $("<h5 class='well' id='note'>This site lets you plan a trip. Not satisfied with the below options? Click <i id='not_satisfied_btn'><a>here</a></i>.</i></h5>")
+    outside_container_title.append(page_description);
+
     $('#bottom_stuff').empty();
     $('#go_home_btn').remove();
     $('#title_page_stuff br').remove();
@@ -976,6 +981,8 @@ $(document).on('click', '#not_satisfied_btn', function() {
 });
 
 var generate_not_satisfied_container_stuff = function() {
+    $('#note').remove();
+
     let body = $('.reg-body');
     let other_total_body = $('.blue_background');
 
