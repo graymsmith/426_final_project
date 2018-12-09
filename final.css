@@ -275,3 +275,7 @@ h2.title {
 #create_flight_div, #create_airport_div {
     overflow: auto;
 }
+
+#bottom_stuff, #departing, #returning {
+    overflow: auto;
+}

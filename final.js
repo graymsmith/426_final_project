@@ -4,15 +4,19 @@ var weather_root_url = "https://api.darksky.net/forecast/5df59b1806b8c925f9502f5
 $(document).ready(() => {
 
 
-
     $(window).resize(function() {
        // alert("tried");
         var windowWidth = $(window).width();
         var windowHeight = $(window).height();
         //alert("closer");
         $('#weather_div').css({'height': windowHeight-220 + 'px'});
-        $('#create_flight_div').css({'height': windowHeight-110 + 'px'});
-        $('#create_airport_div').css({'height': windowHeight-110 + 'px'});
+        $('#create_flight_div').css({'height': windowHeight-140 + 'px'});
+        $('#create_airport_div').css({'height': windowHeight-140 + 'px'});
+        //$('#bottom_stuff').css({'height': windowHeight-200 + 'px'});
+
+        $('#departing').css({'height': windowHeight-255 + 'px'});
+        $('#returning').css({'height': windowHeight-255 + 'px'});
+
         //alert("resided");
     });
 
@@ -140,6 +144,8 @@ var build_interface = function () {
     generate_bottom_container_stuff();
 
     generate_weather_container_stuff();
+
+    window_resize();
 
 };
 
@@ -824,7 +830,7 @@ var make_new_interface = function() {
 
     // all things with departing column below
 
-    let departing = $("<div id='departing' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Departing Flight</h2></div>");
+    let departing = $("<div id='departing' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Departing Flight</h2></div>");
     outside_row.append(departing);
 
     let departing_information = $("<div id='departing_flight_info'></div>");
@@ -862,7 +868,7 @@ var make_new_interface = function() {
 
     // all things with returning column below
 
-    let returning = $("<div id='returning' class='col-sm-4 col-md-4 col-lg-4'><h2 class='title'>Returning Flight</h2></div>");
+    let returning = $("<div id='returning' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Returning Flight</h2></div>");
     outside_row.append(returning);
 
     let returning_information = $("<div id='returning_flight_info'></div>");
@@ -902,6 +908,9 @@ var make_new_interface = function() {
     //button stuff
     let make_ticket_btn = $("<br><div id='make_ticket'><button class='bottom-column btn' id='make_ticket_btn'>Ready to Commit? Get Tickets!</button></div><br>");
     outside_container_bottom.append(make_ticket_btn);
+
+
+    window_resize();
 
 
 
@@ -1023,6 +1032,8 @@ $(document).on('click', '#go_home_btn', function(e) {
 });
 
 var go_home = function() {
+    $('#note').remove();
+
     let outside_container_title = $('#title_page_stuff');
 
     let page_description = $("<h5 class='well' id='note'>This site lets you plan a trip. Not satisfied with the below options? Click <i id='not_satisfied_btn'><a>here</a></i>.</i></h5>")
@@ -1240,6 +1251,11 @@ var window_resize = function() {
         $('#weather_div').css({'height': windowHeight-220 + 'px'});
         $('#create_flight_div').css({'height': windowHeight-140 + 'px'});
         $('#create_airport_div').css({'height': windowHeight-140 + 'px'});
+
+        //$('#bottom_stuff').css({'height': windowHeight-200 + 'px'});
+
+        $('#departing').css({'height': windowHeight-255 + 'px'});
+        $('#returning').css({'height': windowHeight-255 + 'px'});
 }
 
 var create_instance_departure_day, create_flight_number;
