@@ -942,39 +942,46 @@ $(document).on('click', '#ticket_submit_btn', function(e) {
     let age = $('#ticket_age').val();
     let gender = $('#ticket_gender').val();
 
-    // console.log(fname);
-    // console.log(lname);
-    // console.log(age);
-    // console.log(gender);
-    //
-    // console.log(depart_instance_id);
-    // console.log(return_instance_id);
+    if (fname == '' || lname == '' ||  age == '' ||
+        gender == '') {
+        $('#fill_all_fields_modal').modal();
+    } else {
 
-    //put departing ticket info in database
-    $.ajax({
-        url: root_url+'/tickets',
-        type: 'POST',
-        dataType: 'json',
-        xhrFields: { withCredentials: true },
-        data: {
-            "ticket": {
-                "first_name": ''+fname+'',
-                "last_name": ''+lname+'',
-                "age": ''+age+'',
-                "gender": ''+gender+'',
-                "is_purchased": true,
-                "instance_id": ''+depart_instance_id+''
+        // console.log(fname);
+        // console.log(lname);
+        // console.log(age);
+        // console.log(gender);
+        //
+        // console.log(depart_instance_id);
+        // console.log(return_instance_id);
+
+        //put departing ticket info in database
+        $.ajax({
+            url: root_url + '/tickets',
+            type: 'POST',
+            dataType: 'json',
+            xhrFields: {withCredentials: true},
+            data: {
+                "ticket": {
+                    "first_name": '' + fname + '',
+                    "last_name": '' + lname + '',
+                    "age": '' + age + '',
+                    "gender": '' + gender + '',
+                    "is_purchased": 'true',
+                    "instance_id": '' + depart_instance_id + ''
+                }
+            },
+            success: (response) => {
+                console.log('success submitting departing ticket!');
+                depart_ticket_success = 1;
+                put_return_ticket_in();
+            },
+            error: () => {
+                console.log('error submitting departing ticket');
             }
-        },
-        success: (response) => {
-            console.log('success submitting departing ticket!');
-            depart_ticket_success = 1;
-            put_return_ticket_in();
-        },
-        error: () => {
-            console.log('error submitting departing ticket');
-        }
-    });
+        });
+
+    }
 
 
 
@@ -1000,7 +1007,7 @@ var put_return_ticket_in = function() {
                 "last_name": ''+lname+'',
                 "age": ''+age+'',
                 "gender": ''+gender+'',
-                "is_purchased": true,
+                "is_purchased": 'true',
                 "instance_id": ''+return_instance_id+''
             }
         },
@@ -1009,9 +1016,11 @@ var put_return_ticket_in = function() {
             return_ticket_success = 1;
             if(depart_ticket_success == 1 && return_ticket_success == 1){
                 console.log('found both!!!!!!');
-                $('#ticket_modal_body').empty()
-                $('#ticket_submit_btn').remove();
-                $('#ticket_modal_body').append($("<p>Congrats! You're tickets have been booked.</p>"));
+                $('#get_tickets_modal').modal('hide');
+                $('#submitted_tickets_modal').modal();
+                // $('#ticket_modal_body').empty()
+                // $('#ticket_submit_btn').remove();
+                // $('#ticket_modal_body').append($("<p>Congrats! You're tickets have been booked.</p>"));
 
             }else {
                 console.log('something wrong...');
@@ -1053,6 +1062,8 @@ var go_home = function() {
     other_total_body.removeClass('blue_background');
 
     generate_bottom_container_stuff();
+
+    window_resize();
 
 };
 
