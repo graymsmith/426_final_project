@@ -99,6 +99,13 @@ h2.title {
     margin-top: 10px;
 }
 
+#create_instance_btn {
+    background-color: #0073e6;
+    border-color: #0073e6;
+    color: whitesmoke;
+    margin-top: 10px;
+}
+
 #ticket_submit_btn {
     background-color: #0073e6;
     border-color: #0073e6;
@@ -119,7 +126,7 @@ h2.title {
     padding: 10px;
 }
 
-#create_own_airport_div_info, #create_own_flight_div_info {
+#create_own_airport_div_info, #create_own_flight_div_info, #create_own_instance_div_info {
     background-color: #663d00;
     color: whitesmoke;
     border-radius: 4px;

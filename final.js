@@ -1091,10 +1091,10 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
     let arriving_time_dropdown = $("<select class='form-control' id='arriving_time_dropdown'><option value='' disabled selected>select your option</option></select><br>");
     create_own_flight_div_information.append(arriving_time_dropdown);
 
-    let times_array = ["00:00", "00:15", "00:30", "00:45", "01:00", "01:15,", "01:30", "01:45",
+    let times_array = ["00:00", "00:15", "00:30", "00:45", "01:00", "01:15", "01:30", "01:45",
                         "02:00", "02:15", "02:30", "02:45", "03:00", "03:15", "03:30", "03:45",
                         "04:00", "04:15", "04:30", "04:45", "05:00", "05:15", "05:30", "05:45",
-                        "06:00", "06:15", "06:30", "06:45", "07:00", "07:15,", "07:30", "07:45",
+                        "06:00", "06:15", "06:30", "06:45", "07:00", "07:15", "07:30", "07:45",
                         "08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "09:45",
                         "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45",
                         "12:00", "12:15", "12:30", "12:45", "13:00", "13:15", "13:30", "13:45",
@@ -1117,6 +1117,29 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
     let create_flight_btn = $("<br><div id='create_flight'><button class='bottom-column btn' id='create_flight_btn'>Create Flight</button></div><br>");
     create_own_flight_div_information.append(create_flight_btn);
 
+    let create_own_instance_div_information = $("<div id='create_own_instance_div_info'></div>");
+    create_own_flight_div.append(create_own_instance_div_information);
+
+    create_own_instance_div_information.append($("<p>Flight id: </p>"));
+
+    let flight_id_input = $("<input class='form-control' id='flight_id_input' placeholder='e.g. 65123'></input><br>");
+    create_own_instance_div_information.append(flight_id_input);
+
+    create_own_instance_div_information.append($("<p>Day of Departure: </p>"));
+
+    let instance_departing_day_text = $("<input type='text' class='form-control' id='instance_departing_datepicker'><br>")
+    create_own_instance_div_information.append(instance_departing_day_text);
+    instance_departing_day_text.datepicker();
+
+ //   create_own_instance_div_information.append($("<p>Day of Arrival: </p>"));
+
+    let instance_arrival_day_text = $("<input type='text' class='form-control' id='instance_arrival_datepicker'><br>")
+  //  create_own_instance_div_information.append(instance_arrival_day_text);
+  //  instance_arrival_day_text.datepicker();
+
+    let create_instance_btn = $("<br><div id='create_instance'><button class='bottom-column btn' id='create_instance_btn'>Create Instance</button></div><br>");
+    create_own_instance_div_information.append(create_instance_btn);
+
     $.ajax({
         url: root_url+'/airports',
         type: 'GET',
@@ -1135,11 +1158,74 @@ $(document).on('click', '#not_satisfied_btn', function(e) {
         }
     });
 
+    //let create_own_instance_div = $("<div id='create_instance_div' class='col-sm-6 col-md-6 col-lg-6'><h2 class='title'>Create Your Own Flight and Instance</h2></div>");
+    //outside_row.append(create_own_flight_div);
 
 
+
+    //let departing_airport_dropdown = $("<select class='form-control' id='departing_airport_dropdown'><option value='' disabled selected>select your option</option></select><br>");
+    //create_own_flight_div_information.append(departing_airport_dropdown);
 
 
 });
+
+var create_instance_flight_id, create_instance_departure_day, create_instance_arrival_day, create_flight_number;
+
+$(document).on('click', '#create_instance_btn', function(e) {
+    create_instance_flight_id = $('#flight_id_input').val();
+    create_instance_departure_day = $('#instance_departing_datepicker').val();
+    //create_instance_arrival_day = $('#instance_arrival_datepicker').val();
+
+
+  //  alert(create_instance_arrival_day);
+    alert(create_instance_departure_day);
+  //  alert(create_instance_flight_id);
+
+
+    var departing_instance_day_year = create_instance_departure_day.substring(6,10);
+    var departing_instance_day_month = create_instance_departure_day.substring(0,2);
+    var departing_instance_day_day = create_instance_departure_day.substring(3,5);
+    var instance_day_transformed;
+
+    instance_day_transformed = departing_instance_day_year + '-' + departing_instance_day_month + '-' + departing_instance_day_day;
+
+
+    if (create_instance_flight_id == "" || create_instance_departure_day == "")/* || create_instance_arrival_day == "")*/
+    {
+        alert("Please fill out all 2 fields and try again");
+    }
+    else
+    {
+        alert("trying");
+        $.ajax({
+            url: root_url + '/instances',
+            type: 'POST',
+            dataType: 'json',
+            xhrFields: {withCredentials: true},
+            data: {
+                "instance": {
+                    "flight_id": ''+create_instance_flight_id+'',
+                    "date": ''+instance_day_transformed+''
+                }
+            },
+            success: (response) => {
+                alert("worked");
+            },
+            error: (ts) => {
+                alert("failed");
+                alert(create_instance_flight_id);
+                alert(create_instance_departure_day);
+                //alert('not logged in');
+                // alert(ts.responseText);
+                //alert("error");
+                //alert(create_airport_name);
+                //alert(create_airport_code);
+            }
+        });
+    }
+});
+
+
 
 var create_airport_name, create_airport_code, create_airport_latitude, create_airport_longitude,
     create_airport_city, create_airport_state/*, create_airport_city_url*/ ="";
@@ -1196,6 +1282,115 @@ $(document).on('click', '#create_airport_btn', function(e) {
                 //alert(create_airport_code);
             }
         });
+    }
+
+});
+
+$(document).on('click', '#create_flight_btn', function(e) {
+
+
+    create_flight_departing = $('#departing_airport_dropdown').val();
+    create_flight_arriving = $('#arriving_airport_dropdown').val();
+    create_flight_departing_time = $('#departing_time_dropdown').val();
+    create_flight_arriving_time = $('#arriving_time_dropdown').val();
+    create_flight_number = $('#flight_number_input').val();
+    //  create_airport_city_url = $('#coa_city_url_input').val();
+
+    //alert(create_airport_name);
+    //alert(create_airport_code);
+
+    var departing_airport_id, arriving_airport_id;
+    var new_flight_id;
+
+    if (create_flight_departing == null || create_flight_arriving == null || create_flight_departing_time == null || create_flight_arriving_time == null || create_flight_number == "")
+    {
+        alert("Please fill out all 5 fields and try again");
+    }
+    else
+    {
+        $.ajax({
+        url: root_url+'/airports',
+        type: 'GET',
+        dataType: 'json',
+        xhrFields: { withCredentials: true },
+        success: (response) => {
+            for (let i=0; i<response.length; i++) {
+                let airport_name = response[i].name;
+                let airport_id = response[i].id;
+                // alert("trying");
+                if (airport_name == create_flight_departing) {
+                    departing_airport_id = airport_id;
+                }
+
+                if (airport_name == create_flight_arriving) {
+                    arriving_airport_id = airport_id;
+
+                }
+            }
+
+            $.ajax({
+                url: root_url + '/flights',
+                type: 'POST',
+                dataType: 'json',
+                xhrFields: {withCredentials: true},
+                data: {
+                    "flight": {
+                        "departs_at": ''+create_flight_departing_time+'',
+                        "arrives_at": ''+create_flight_arriving_time+'',
+                        "departure_id": ""+departing_airport_id+"",
+                        "arrival_id": ""+arriving_airport_id+"",
+                        "number": ""+create_flight_number+""
+                    }
+                },
+                success: (response) => {
+                    alert("worked");
+                    alert(create_flight_departing_time);
+                    alert(create_flight_arriving_time);
+                    alert(departing_airport_id);
+                    alert(arriving_airport_id);
+                    alert(create_flight_number);
+
+                    $.ajax({
+                            url: root_url+'/flights',
+                            type: 'GET',
+                            dataType: 'json',
+                            xhrFields: { withCredentials: true },
+                            success: (response) => {
+                                for (let i=0; i<response.length; i++) {
+                                    let get_departing_airport_id = response[i].departure_id;
+                                    let get_arriving_airport_id = response[i].arrival_id;
+                                    let get_this_flight_id = response[i].id;
+                                    // alert("trying");
+                                    if (get_departing_airport_id == departing_airport_id && get_arriving_airport_id == arriving_airport_id)
+                                        new_flight_id = get_this_flight_id;
+                                }
+                                alert("Your new flight id is " + new_flight_id);
+                            },
+                            //console.log(response)
+                        error: () => {
+                            console.log('error getting airports');
+                        }
+                        });
+                },
+                error: (ts) => {
+                    //alert('not logged in');
+                    // alert(ts.responseText);
+                    //alert("error");
+                    //alert(create_airport_name);
+                    //alert(create_airport_code);
+                }
+            });
+
+            //console.log(response);
+        },
+        error: () => {
+            console.log('error getting airports');
+        }
+    });
+
+
+
+
     }
 
 });
