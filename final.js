@@ -438,8 +438,6 @@ var implementWeather = function(thisWeather)
 
         //alert(dayOfWeekString);
 
-
-
         dateCounter++;
     }
     $('#generate_weather_btn').text("Find Weather");
@@ -486,6 +484,7 @@ $(document).on('click', '#find_flights_btn', function(e) {
     returning_depart_airport_text = $("#return_dep_loc_dropdown").val();
     returning_arrive_airport_text = $("#return_arriv_loc_dropdown").val();
     returning_day = $("#returning_datepicker").val();
+
 
     if (departing_leave_airport_text == null || departing_arrive_airport_text == null ||  departing_day == '' ||
         returning_depart_airport_text == null || returning_arrive_airport_text == null || returning_day == "") {
@@ -1055,6 +1054,7 @@ var go_home = function() {
 
     $('#bottom_stuff').empty();
     $('#go_home_btn').remove();
+
     $('#title_page_stuff br').remove();
 
     let total_body = $('.orange_background');
