@@ -36,6 +36,8 @@ $(document).ready(() => {
 
 
     login_btn.on('click', () => {
+        //waitingDialog.show('Custom message');
+        //$('#loading_modal').modal();
         //alert('clicked');
 
         //$('#get_tickets_modal').modal();
@@ -335,7 +337,6 @@ $(document).on('click', '#generate_weather_btn', function(e) {
     } else {
         $('#generate_weather_btn').text("Finding Weather...");
 
-        //$.support.cors = true;
         //find airport id from name of airport
         $.ajax({
             url: root_url + '/airports',
@@ -386,7 +387,6 @@ $(document).on('click', '#generate_weather_btn', function(e) {
         });
 
     }
-
 
 });
 
@@ -494,6 +494,8 @@ $(document).on('click', '#find_flights_btn', function(e) {
     } else {
 
         $('#find_flights_btn').text("Finding flights...");
+
+        $('#loading_modal').modal();
 
         var departing_day_year = departing_day.substring(6, 10);
         var departing_day_month = departing_day.substring(0, 2);
@@ -693,6 +695,7 @@ $(document).on('click', '#find_flights_btn', function(e) {
                         $('#find_flights_btn').text("Find Flights");
 
                         //pop up a modal or something
+                        $('#loading_modal').modal('hide');
                         $('#no_can_do_modal').modal();
 
 
@@ -766,6 +769,7 @@ var find_instances = function () {
                     $('#find_flights_btn').text("Find Flights");
 
                     //pop up a modal or something
+                    $('#loading_modal').modal('hide');
                     $('#no_instances_modal').modal();
                 }
 
@@ -809,6 +813,7 @@ var find_instances = function () {
 
 
 var make_new_interface = function() {
+    $('#loading_modal').modal('hide');
     $('#bottom_stuff').empty();
 
     let outside_container_bottom = $('#bottom_stuff');
@@ -1329,8 +1334,6 @@ $(document).on('click', '#create_airport_btn', function(e) {
 
 var departing_airport_id, arriving_airport_id;
 var new_flight_id;
-
-var departing_id_checker
 
 $(document).on('click', '#create_flight_btn', function(e) {
 

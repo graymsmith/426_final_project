@@ -279,3 +279,37 @@ h2.title {
 #bottom_stuff, #departing, #returning {
     overflow: auto;
 }
+
+#loading_modal_dialog_styling{
+    display: table;
+    position: relative;
+    margin: 0 auto;
+    top: calc(50% - 24px);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+
+#loading_modal_styling, #loading_modal_dialog_styling{
+    background-color: transparent;
+    border: none;
+}
+
+fa fa-spinner fa-spin fa-3x {
+    color: lightgray;
+}
+
+/*.bd-example-modal-lg .modal-dialog{*/
+    /*display: table;*/
+    /*position: relative;*/
+    /*margin: 0 auto;*/
+    /*top: calc(50% - 24px);*/
+    /*position: fixed;*/
+    /*top: 50%;*/
+    /*left: 50%;*/
+/*}*/
+
+/*.bd-example-modal-lg .modal-dialog .modal-content{*/
+    /*background-color: transparent;*/
+    /*border: none;*/
+/*}*/
