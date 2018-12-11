@@ -263,10 +263,30 @@ var generate_bottom_container_stuff = function() {
     returning_day_text.datepicker();
 
 
+
+
     // append submit button here
 
     let generate_flights_btn = $("<br><div id='generate_flights'><button class='bottom-column btn' id='find_flights_btn'>Find Flights</button></div>");
     outside_container_bottom.append(generate_flights_btn);
+
+
+
+    // live feature stuff here
+    let live_feature_btn = $("<button class='bottom-column btn' id='live_feature_btn'>See if Airport Exists</button>");
+    $('#generate_flights').append(live_feature_btn);
+
+    // let live_information = $("<div id='live_information'></div>");
+    // live_feature_div.append(live_information);
+    //
+    // let live_airport_lookup = $("<div id='live_airport_lookup'><p>See if Airport Exists: </p></div>");
+    // live_information.append(live_airport_lookup);
+    //
+    // let live_airport_lookup_text = $("<input type='text' class='form-control' id='live_text'>")
+    // live_information.append(live_airport_lookup_text);
+
+
+
 
 
     // fill in stuff from backend here
@@ -292,6 +312,40 @@ var generate_bottom_container_stuff = function() {
     });
 
 }
+
+$(document).on('click', '#live_feature_btn', function(e) {
+    $('#live_modal').modal();
+});
+
+$(document).on('keyup', '#live_text', function(e) {
+    let live_airport_data_place = $('#live_airport_response_data');
+    let response_text = $('#live_text').val();
+
+    //make ajax call to look up the airports
+    $.ajax({
+        url: root_url+'/airports?filter[name_ilike]='+response_text,
+        type: 'GET',
+        dataType: 'json',
+        xhrFields: { withCredentials: true },
+        success: (response) => {
+            live_airport_data_place.empty();
+            for (let i=0; i<response.length; i++) {
+                let to_append = $('<p>'+response[i].name+'</p>');
+                live_airport_data_place.append(to_append);
+            }
+        },
+        error: () => {
+            console.log('error in live feature');
+        },
+        async: false
+    });
+
+
+
+
+    // let to_append = $('<p>'+response_text+'</p>');
+    // live_airport_message.append(to_append);
+});
 
 $(document).on('click', '#departing_datepicker', function(e) {
     $('#departing_datepicker').datepicker('show');

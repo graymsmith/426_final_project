@@ -179,6 +179,29 @@ h2.title {
     color: darkslategray;
 }
 
+#live_feature_btn {
+    background-color: #1d3030;
+    color: lightgray;
+    float: right;
+}
+
+#live_modal_styling {
+    /*background-color: gray;*/
+    /*color: black;*/
+    overflow: auto;
+}
+
+#live_information {
+    background-color: lightgray;
+    color: darkslategrey;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#live_airport_response_data {
+    color: black;
+}
+
 #generate_weather_btn {
     background-color: lightgray;
     color: darkslategray;
